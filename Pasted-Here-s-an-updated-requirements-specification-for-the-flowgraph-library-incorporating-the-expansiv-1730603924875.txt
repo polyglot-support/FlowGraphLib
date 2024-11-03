@@ -1,0 +1,86 @@
+Here’s an updated requirements specification for the flowgraph library, incorporating the **expansive/compressive fractal tree** structure to efficiently manage values, precision, and updates:
+
+---
+
+# **C++20 Flowgraph Library Requirements**
+
+## **Overview**
+The Flowgraph Library is a C++20-based mathematical flowgraph library designed to model, compute, and optimize complex data flow operations asynchronously. The library leverages an expansive/compressive fractal tree structure for deterministic and efficient handling of absolute and probabilistic values, enabling scalable precision and efficient storage.
+
+## **Core Features**
+
+### 1. **Graph Structure**
+   - **Nodes**: Represent individual operations or computations, with each node capable of storing expansive/compressive values using a fractal tree structure.
+   - **Edges**: Represent data flow dependencies between nodes.
+   - **Directed Acyclic Graph (DAG)**: Graphs must maintain a DAG structure to enforce computational order and avoid cycles.
+   - **Flexible Types**: Support templated node and edge types, allowing users to define operations on custom data structures or primitives.
+
+### 2. **Expansive/Compressive Fractal Tree for Value Storage**
+   - **Fractal Tree Representation**: Each node stores values within a hierarchical fractal tree structure, balancing precision and storage.
+   - **Dynamic Precision Scaling**: Nodes support dynamically adjusting precision levels, with finer precision accessed only as required.
+   - **Absolute and Pending Update States**: Each node maintains an absolute value and a pending update, facilitating fast access and deferred merging.
+   - **Efficient Access and Lazy Expansion**: Values are accessed hierarchically, descending only to levels necessary for requested precision. Nodes expand as needed and compress during periodic merges.
+   - **Sparse Representation**: Use of sparse encoding techniques, such as compressed sparse format (CSF), for efficient storage of precision levels.
+   
+### 3. **Periodic Merge Cycle for Updates**
+   - **Merge Scheduling**: A configurable periodic merge cycle aggregates pending updates into absolute values, minimizing overhead from constant updates.
+   - **Recursive Merging**: During each merge cycle, values propagate from finer levels to coarser levels, consolidating data and compressing the tree to reduce storage.
+   - **Threshold-Based Merging**: Option to trigger merges based on thresholds, such as pending update volume or frequency of changes, optimizing performance.
+
+### 4. **Asynchronous Execution**
+   - **Coroutines**: Use C++20 coroutines to manage asynchronous execution of nodes.
+   - **Node Completion Callbacks**: Nodes support callbacks triggered upon completion, enabling non-blocking workflows.
+   - **Non-Blocking API**: Nodes and the graph structure support non-blocking execution for use in multi-threaded environments.
+
+### 5. **Callback Mechanism**
+   - **Node Callbacks**: Enable users to define custom functions to execute on node completion.
+   - **Edge Callbacks**: Allow edge-specific callbacks to monitor data propagation or dependency resolution.
+   - **Event-Driven**: Callbacks support events like `on_update`, `on_complete`, and `on_failure` to provide fine-grained control over the flow.
+
+### 6. **Caching Mechanism**
+   - **Local Node Cache**: Nodes have a local cache for storing recent computation results.
+   - **Graph-Level Cache**: Optionally, the graph may hold a cache for reuse of computed values across nodes.
+   - **Cache Policy**: Provide customizable cache eviction policies, such as LRU or LFU, and integrate fractal tree compression to minimize storage overhead.
+   - **Concurrency**: Ensure thread-safe access to caches, especially during fractal tree compression cycles.
+
+### 7. **Optimization Mechanisms**
+   - **Local Optimization**: Nodes support optimization hints for minimizing redundant operations.
+   - **Global Optimization Passes**: Graph-wide optimizations to remove unnecessary nodes and minimize redundant edges.
+   - **Lazy Evaluation**: Support lazy execution, calculating node values only when required, leveraging the fractal tree's sparse representation for efficiency.
+
+### 8. **Concurrency and Thread Safety**
+   - **Mutex Locking**: Provide mutex-based locking for node data and cache, ensuring safe access in multi-threaded contexts.
+   - **Atomic Operations**: Use atomic operations for node state updates, ensuring precision in pending updates within the fractal structure.
+   - **Thread Pool**: Optionally, allow users to specify a thread pool to manage asynchronous execution.
+
+### 9. **Serialization and Deserialization**
+   - **Graph Serialization**: Serialize graph states, including the fractal tree hierarchy, structure, and cached data.
+   - **Supported Formats**: JSON, binary, or custom formats, allowing for flexible and performance-oriented storage.
+   - **Deserialization**: Enable restoration of graphs from saved states, maintaining fractal tree precision and cached data.
+
+### 10. **Error Handling**
+   - **Node Error States**: Nodes handle errors gracefully, supporting retries and callback notification upon failure.
+   - **Graph Error Propagation**: Errors in node execution propagate through dependent nodes with configurable behavior.
+   - **Logging and Debugging**: Provide logging for tracing errors, callback execution, and fractal tree compression cycles.
+
+## **Implementation Requirements**
+
+### **Code Structure**
+   - **Namespace**: Use a dedicated namespace (e.g., `flowgraph`).
+   - **Classes**:
+     - `Node`: Represents a computation node, including fractal tree data management and expansion/compression operations.
+     - `Edge`: Manages dependencies between nodes.
+     - `Graph`: Main container class for nodes and edges, managing execution, caching, and optimization.
+     - `FractalTreeNode`: A recursive structure supporting expansive/compressive precision adjustments and periodic updates.
+     - `CachePolicy`: Interface for defining custom cache strategies.
+     - `OptimizationPass`: Interface for defining optimization strategies.
+
+### **Design Constraints**
+   - **C++20 Standards**: All code should adhere to C++20, leveraging coroutines, concepts, and threading libraries where applicable.
+   - **Dependency Management**: Minimize dependencies on external libraries. Boost and STL libraries are acceptable if needed.
+   - **Platform Compatibility**: Ensure cross-platform compatibility (Windows, Linux, MacOS).
+   - **Documentation**: Document public interfaces, with examples for node creation, fractal tree management, callback registration, caching, and optimization.
+
+---
+
+This specification adds a scalable, efficient structure for high-precision and sparse data within the graph, addressing storage, computation, and concurrency needs.

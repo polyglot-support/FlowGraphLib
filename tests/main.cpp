@@ -13,6 +13,11 @@
 using namespace flowgraph;
 using namespace std::chrono_literals;
 
+// Include fractal tree tests
+namespace fractal_tree_tests {
+    void run_all_tests();
+}
+
 // Test node that returns a constant value
 class TestNode : public Node<int> {
 public:
@@ -213,6 +218,7 @@ void test_thread_pool() {
 }
 
 int main() {
+    std::cout << "Running core flowgraph tests..." << std::endl;
     test_basic_functionality();
     test_graph_creation();
     test_dead_node_elimination();
@@ -222,6 +228,9 @@ int main() {
     test_serialization();
     test_thread_pool();
 
-    std::cout << "All tests passed!" << std::endl;
+    std::cout << "\nRunning FractalTreeNode tests..." << std::endl;
+    fractal_tree_tests::run_all_tests();
+
+    std::cout << "\nAll tests passed!" << std::endl;
     return 0;
 }
