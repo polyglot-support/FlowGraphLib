@@ -1,16 +1,22 @@
 #pragma once
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <stdexcept>
 #include "node.hpp"
 #include "edge.hpp"
 #include "../async/task.hpp"
+#include "../cache/graph_cache.hpp"
+#include "../cache/cache_policy.hpp"
 
 namespace flowgraph {
 
 template<NodeValue T>
 class Graph {
 public:
+    explicit Graph(std::unique_ptr<CachePolicy<T>> cache_policy = nullptr)
+        : cache_(std::make_unique<GraphCache<T>>(std::move(cache_policy))) {}
+
     void add_node(std::shared_ptr<Node<T>> node) {
         nodes_.insert(node);
     }
@@ -21,6 +27,10 @@ public:
         } else {
             throw std::runtime_error("Adding edge would create a cycle");
         }
+    }
+
+    void set_cache_policy(std::unique_ptr<CachePolicy<T>> policy) {
+        cache_ = std::make_unique<GraphCache<T>>(std::move(policy));
     }
 
     // Async execution of the entire graph
@@ -72,13 +82,22 @@ private:
                 co_await execute_node(edge->from(), visited);
             }
         }
+
+        // Execute node and handle caching
+        T result = co_await node->compute();
         
-        co_await node->compute();
-        co_return;  // Added missing co_return
+        if (cache_) {
+            if (auto cached = cache_->get(result); !cached.has_value()) {
+                cache_->store(result);
+            }
+        }
+        
+        co_return;
     }
 
     std::unordered_set<std::shared_ptr<Node<T>>> nodes_;
     std::unordered_set<std::shared_ptr<Edge<T>>> edges_;
+    std::unique_ptr<GraphCache<T>> cache_;
 };
 
 } // namespace flowgraph
