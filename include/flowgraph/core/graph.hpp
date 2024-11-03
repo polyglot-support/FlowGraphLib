@@ -4,12 +4,14 @@
 #include <unordered_set>
 #include <vector>
 #include <stdexcept>
+#include <nlohmann/json.hpp>
 #include "node.hpp"
 #include "edge.hpp"
 #include "../async/task.hpp"
 #include "../cache/graph_cache.hpp"
 #include "../cache/cache_policy.hpp"
 #include "../optimization/optimization_pass.hpp"
+#include "../serialization/serialization.hpp"
 
 namespace flowgraph {
 
@@ -49,6 +51,43 @@ public:
     void optimize() {
         for (const auto& pass : optimization_passes_) {
             pass->optimize(*this);
+        }
+    }
+
+    // Serialization support
+    nlohmann::json to_json() const {
+        return serialize_graph(*this);
+    }
+
+    void from_json(const nlohmann::json& j, 
+                  std::function<std::shared_ptr<Node<T>>(const std::string&)> node_factory) {
+        // Clear existing state
+        nodes_.clear();
+        edges_.clear();
+
+        // Deserialize nodes
+        if (j.contains("nodes")) {
+            for (const auto& node_json : j["nodes"]) {
+                std::string name = node_json["name"];
+                auto node = node_factory(name);
+                deserialize_node(*node, node_json);
+                add_node(node);
+            }
+        }
+
+        // Deserialize edges
+        if (j.contains("edges")) {
+            for (const auto& edge_json : j["edges"]) {
+                std::string from_name = edge_json["from"];
+                std::string to_name = edge_json["to"];
+                
+                auto from_node = find_node_by_name(from_name);
+                auto to_node = find_node_by_name(to_name);
+                
+                if (from_node && to_node) {
+                    add_edge(std::make_shared<Edge<T>>(from_node, to_node));
+                }
+            }
         }
     }
 
@@ -106,6 +145,15 @@ public:
     }
 
 private:
+    std::shared_ptr<Node<T>> find_node_by_name(const std::string& name) const {
+        for (const auto& node : nodes_) {
+            if (node->name() == name) {
+                return node;
+            }
+        }
+        return nullptr;
+    }
+
     bool has_cycle(std::shared_ptr<Edge<T>> new_edge) {
         std::unordered_set<std::shared_ptr<Node<T>>> visited;
         return detect_cycle(new_edge->to(), visited);

@@ -4,6 +4,8 @@
 #include <flowgraph/cache/cache_policy.hpp>
 #include <flowgraph/optimization/dead_node_elimination.hpp>
 #include <flowgraph/optimization/node_fusion.hpp>
+#include <flowgraph/serialization/serialization.hpp>
+#include <nlohmann/json.hpp>
 
 using namespace flowgraph;
 
@@ -137,6 +139,34 @@ void test_lfu_cache() {
     std::cout << "LFU cache test passed!" << std::endl;
 }
 
+void test_serialization() {
+    // Create original graph
+    Graph<int> original_graph;
+    auto node1 = std::make_shared<TestNode>(1);
+    auto node2 = std::make_shared<TestNode>(2);
+    original_graph.add_node(node1);
+    original_graph.add_node(node2);
+    original_graph.add_edge(std::make_shared<Edge<int>>(node1, node2));
+
+    // Serialize graph
+    nlohmann::json json = original_graph.to_json();
+
+    // Create new graph and deserialize
+    Graph<int> deserialized_graph;
+    deserialized_graph.from_json(json, [](const std::string& name) {
+        return std::make_shared<TestNode>(1); // Simple factory for test nodes
+    });
+
+    // Verify graph structure
+    assert(deserialized_graph.get_nodes().size() == original_graph.get_nodes().size());
+    
+    // Execute both graphs
+    original_graph.execute().await_resume();
+    deserialized_graph.execute().await_resume();
+
+    std::cout << "Serialization test passed!" << std::endl;
+}
+
 int main() {
     test_basic_functionality();
     test_graph_creation();
@@ -144,6 +174,7 @@ int main() {
     test_node_fusion();
     test_lru_cache();
     test_lfu_cache();
+    test_serialization();
 
     std::cout << "All tests passed!" << std::endl;
     return 0;

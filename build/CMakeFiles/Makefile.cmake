@@ -10,22 +10,33 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/home/runner/workspace/CMakeLists.txt"
   "CMakeFiles/3.29.2/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.29.2/CMakeSystem.cmake"
+  "_deps/json-src/CMakeLists.txt"
+  "_deps/json-src/cmake/config.cmake.in"
+  "_deps/json-src/cmake/nlohmann_jsonConfigVersion.cmake.in"
+  "_deps/json-src/cmake/pkg-config.pc.in"
   "/home/runner/workspace/tests/CMakeLists.txt"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeCXXInformation.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeCommonLanguageInclude.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeGenericSystem.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeInitializeConfigs.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeLanguageInformation.cmake"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakePackageConfigHelpers.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeSystemSpecificInformation.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/CMakeSystemSpecificInitialize.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Compiler/GNU-CXX.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Compiler/GNU.cmake"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/ExternalProject.cmake"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/ExternalProject/shared_internal_commands.cmake"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/FetchContent.cmake"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/FetchContent/CMakeLists.cmake.in"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/GNUInstallDirs.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Platform/Linux-GNU-CXX.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Platform/Linux-GNU.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Platform/Linux-Initialize.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Platform/Linux.cmake"
   "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/Platform/UnixPaths.cmake"
+  "/nix/store/q1nssraba326p2kp6627hldd2bhg254c-cmake-3.29.2/share/cmake-3.29/Modules/WriteBasicConfigVersionFile.cmake"
   )
 
 # The corresponding makefile is:
@@ -36,7 +47,12 @@ set(CMAKE_MAKEFILE_OUTPUTS
 
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
+  "_deps/json-subbuild/CMakeLists.txt"
   "CMakeFiles/CMakeDirectoryInformation.cmake"
+  "_deps/json-build/nlohmann_json.pc"
+  "_deps/json-build/nlohmann_jsonConfigVersion.cmake"
+  "_deps/json-build/nlohmann_jsonConfig.cmake"
+  "_deps/json-build/CMakeFiles/CMakeDirectoryInformation.cmake"
   "tests/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
