@@ -47,6 +47,7 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o
  /home/runner/workspace/build/_deps/json-src/include/nlohmann/ordered_map.hpp
  /home/runner/workspace/build/_deps/json-src/include/nlohmann/thirdparty/hedley/hedley.hpp
  /home/runner/workspace/build/_deps/json-src/include/nlohmann/thirdparty/hedley/hedley_undef.hpp
+ /home/runner/workspace/include/flowgraph/async/future_helpers.hpp
  /home/runner/workspace/include/flowgraph/async/task.hpp
  /home/runner/workspace/include/flowgraph/async/thread_pool.hpp
  /home/runner/workspace/include/flowgraph/cache/cache_policy.hpp

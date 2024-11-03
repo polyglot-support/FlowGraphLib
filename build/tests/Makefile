@@ -140,6 +140,30 @@ flowgraph_tests/fast:
 	cd /home/runner/workspace/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/flowgraph_tests.dir/build.make tests/CMakeFiles/flowgraph_tests.dir/build
 .PHONY : flowgraph_tests/fast
 
+fractal_tree_test.o: fractal_tree_test.cpp.o
+.PHONY : fractal_tree_test.o
+
+# target to build an object file
+fractal_tree_test.cpp.o:
+	cd /home/runner/workspace/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/flowgraph_tests.dir/build.make tests/CMakeFiles/flowgraph_tests.dir/fractal_tree_test.cpp.o
+.PHONY : fractal_tree_test.cpp.o
+
+fractal_tree_test.i: fractal_tree_test.cpp.i
+.PHONY : fractal_tree_test.i
+
+# target to preprocess a source file
+fractal_tree_test.cpp.i:
+	cd /home/runner/workspace/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/flowgraph_tests.dir/build.make tests/CMakeFiles/flowgraph_tests.dir/fractal_tree_test.cpp.i
+.PHONY : fractal_tree_test.cpp.i
+
+fractal_tree_test.s: fractal_tree_test.cpp.s
+.PHONY : fractal_tree_test.s
+
+# target to generate assembly for a file
+fractal_tree_test.cpp.s:
+	cd /home/runner/workspace/build && $(MAKE) $(MAKESILENT) -f tests/CMakeFiles/flowgraph_tests.dir/build.make tests/CMakeFiles/flowgraph_tests.dir/fractal_tree_test.cpp.s
+.PHONY : fractal_tree_test.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -174,6 +198,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... flowgraph_tests"
+	@echo "... fractal_tree_test.o"
+	@echo "... fractal_tree_test.i"
+	@echo "... fractal_tree_test.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

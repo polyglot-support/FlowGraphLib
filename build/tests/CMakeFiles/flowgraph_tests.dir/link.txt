@@ -1,1 +1,1 @@
-/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0/bin/g++ CMakeFiles/flowgraph_tests.dir/main.cpp.o -o flowgraph_tests
+/nix/store/9bv7dcvmfcjnmg5mnqwqlq2wxfn8d7yi-gcc-wrapper-13.2.0/bin/g++ CMakeFiles/flowgraph_tests.dir/main.cpp.o CMakeFiles/flowgraph_tests.dir/fractal_tree_test.cpp.o -o flowgraph_tests

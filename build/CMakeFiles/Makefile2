@@ -142,12 +142,12 @@ CMakeFiles/basic_usage.dir/clean:
 tests/CMakeFiles/flowgraph_tests.dir/all:
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/flowgraph_tests.dir/build.make tests/CMakeFiles/flowgraph_tests.dir/depend
 	$(MAKE) $(MAKESILENT) -f tests/CMakeFiles/flowgraph_tests.dir/build.make tests/CMakeFiles/flowgraph_tests.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/workspace/build/CMakeFiles --progress-num=3,4 "Built target flowgraph_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/workspace/build/CMakeFiles --progress-num=3,4,5 "Built target flowgraph_tests"
 .PHONY : tests/CMakeFiles/flowgraph_tests.dir/all
 
 # Build rule for subdir invocation for target.
 tests/CMakeFiles/flowgraph_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 3
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tests/CMakeFiles/flowgraph_tests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 0
 .PHONY : tests/CMakeFiles/flowgraph_tests.dir/rule
