@@ -1,22 +1,30 @@
 #include <iostream>
 #include <cassert>
+#include <chrono>
+#include <thread>
 #include <flowgraph/core/graph.hpp>
 #include <flowgraph/cache/cache_policy.hpp>
 #include <flowgraph/optimization/dead_node_elimination.hpp>
 #include <flowgraph/optimization/node_fusion.hpp>
 #include <flowgraph/serialization/serialization.hpp>
+#include <flowgraph/async/thread_pool.hpp>
 #include <nlohmann/json.hpp>
 
 using namespace flowgraph;
+using namespace std::chrono_literals;
 
 // Test node that returns a constant value
 class TestNode : public Node<int> {
 public:
-    TestNode(int value) : Node<int>("test"), value_(value) {}
+    TestNode(int value, std::chrono::milliseconds delay = 0ms) 
+        : Node<int>("test"), value_(value), delay_(delay) {}
 
 protected:
     Task<int> compute_impl() override {
         compute_count_++;
+        if (delay_.count() > 0) {
+            std::this_thread::sleep_for(delay_);
+        }
         co_return value_;
     }
 
@@ -25,6 +33,7 @@ public:
 
 private:
     int value_;
+    std::chrono::milliseconds delay_;
 };
 
 void test_basic_functionality() {
@@ -167,6 +176,42 @@ void test_serialization() {
     std::cout << "Serialization test passed!" << std::endl;
 }
 
+void test_thread_pool() {
+    // Create a custom thread pool with 4 threads
+    auto thread_pool = std::make_shared<ThreadPool>(4);
+    Graph<int> graph(nullptr, thread_pool);
+    
+    // Create nodes with artificial delays
+    auto node1 = std::make_shared<TestNode>(1, 100ms);
+    auto node2 = std::make_shared<TestNode>(2, 100ms);
+    auto node3 = std::make_shared<TestNode>(3, 100ms);
+    auto node4 = std::make_shared<TestNode>(4, 100ms);
+    
+    // Add independent nodes to graph
+    graph.add_node(node1);
+    graph.add_node(node2);
+    graph.add_node(node3);
+    graph.add_node(node4);
+    
+    // Measure execution time
+    auto start = std::chrono::high_resolution_clock::now();
+    graph.execute().await_resume();
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    
+    // With parallel execution, total time should be approximately 100ms
+    // Allow some overhead, but it should be significantly less than 400ms (sequential execution)
+    assert(duration.count() < 200);  // Allow 200ms max
+    
+    // Verify all nodes were executed
+    assert(node1->compute_count_ == 1);
+    assert(node2->compute_count_ == 1);
+    assert(node3->compute_count_ == 1);
+    assert(node4->compute_count_ == 1);
+
+    std::cout << "Thread pool test passed!" << std::endl;
+}
+
 int main() {
     test_basic_functionality();
     test_graph_creation();
@@ -175,6 +220,7 @@ int main() {
     test_lru_cache();
     test_lfu_cache();
     test_serialization();
+    test_thread_pool();
 
     std::cout << "All tests passed!" << std::endl;
     return 0;
