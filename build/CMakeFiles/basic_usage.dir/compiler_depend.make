@@ -6,6 +6,7 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
   /home/runner/workspace/include/flowgraph/cache/cache_policy.hpp \
   /home/runner/workspace/include/flowgraph/cache/graph_cache.hpp \
   /home/runner/workspace/include/flowgraph/cache/node_cache.hpp \
+  /home/runner/workspace/include/flowgraph/optimization/optimization_pass.hpp \
   /home/runner/workspace/include/flowgraph/core/concepts.hpp \
   /home/runner/workspace/include/flowgraph/core/edge.hpp \
   /home/runner/workspace/include/flowgraph/core/graph.hpp \
@@ -344,7 +345,7 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/uintn-identity.h:
 
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ext/aligned_buffer.h:
+/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/typesizes.h:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/stddef.h:
 
@@ -369,10 +370,6 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/coroutine:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/unordered_map.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/unique_lock.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/basic_string.h:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/uniform_int_dist.h:
 
@@ -494,6 +491,40 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/shared_ptr.h:
 
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/char_traits.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/limits.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/basic_string.tcc:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/basic_ios.tcc:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/align.h:
+
+/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/waitflags.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/list.tcc:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/exception_defines.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ctime:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/exception.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/ranges_util.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ext/atomicity.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/backward/binders.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/memory_resource.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/nested_exception.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/ios_base.h:
+
+/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/endian.h:
+
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/string:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/vector.tcc:
@@ -532,6 +563,10 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/syslimits.h:
 
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/basic_string.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/unique_lock.h:
+
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/allocator.h:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/predefined_ops.h:
@@ -554,12 +589,6 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /home/runner/workspace/include/flowgraph/core/graph.hpp:
 
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/lib/gcc/x86_64-unknown-linux-gnu/13.2.0/include/limits.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/char_traits.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/basic_string.tcc:
-
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/unordered_set:
 
 /home/runner/workspace/include/flowgraph/cache/node_cache.hpp:
@@ -578,33 +607,11 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/locale_facets.tcc:
 
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/basic_ios.tcc:
+/home/runner/workspace/include/flowgraph/optimization/optimization_pass.hpp:
 
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/align.h:
+/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types.h:
 
-/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/waitflags.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/list.tcc:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/exception_defines.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ctime:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/exception.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/ranges_util.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ext/atomicity.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/backward/binders.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/memory_resource.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/nested_exception.h:
-
-/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/ios_base.h:
-
-/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/endian.h:
+/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types/__locale_t.h:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/uses_allocator_args.h:
 
@@ -652,9 +659,9 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types/FILE.h:
 
-/home/runner/workspace/include/flowgraph/core/node.hpp:
-
 /home/runner/workspace/include/flowgraph/cache/graph_cache.hpp:
+
+/home/runner/workspace/include/flowgraph/core/node.hpp:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/invoke.h:
 
@@ -679,6 +686,8 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/move.h:
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ext/alloc_traits.h:
+
+/nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/ext/aligned_buffer.h:
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/locale.h:
 
@@ -854,15 +863,9 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/timesize.h:
 
-/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types.h:
-
-/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types/__locale_t.h:
-
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/x86_64-unknown-linux-gnu/bits/gthr-default.h:
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types/__fpos64_t.h:
-
-/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/typesizes.h:
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types/__fpos_t.h:
 
@@ -882,9 +885,9 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o: /home/runner/workspace/ex
 
 /nix/store/14c6s4xzhy14i2b05s00rjns2j93gzz4-gcc-13.2.0/include/c++/13.2.0/bits/streambuf_iterator.h:
 
-/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/environments.h:
-
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/pthreadtypes-arch.h:
+
+/nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/environments.h:
 
 /nix/store/fwh4fxd747m0py3ib3s5abamia9nrf90-glibc-2.39-52-dev/include/bits/types/timer_t.h:
 

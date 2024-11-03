@@ -2,6 +2,8 @@
 #include <cassert>
 #include <flowgraph/core/graph.hpp>
 #include <flowgraph/cache/cache_policy.hpp>
+#include <flowgraph/optimization/dead_node_elimination.hpp>
+#include <flowgraph/optimization/node_fusion.hpp>
 
 using namespace flowgraph;
 
@@ -42,6 +44,67 @@ void test_graph_creation() {
     std::cout << "Graph creation test passed!" << std::endl;
 }
 
+void test_dead_node_elimination() {
+    Graph<int> graph;
+    
+    // Create nodes
+    auto node1 = std::make_shared<TestNode>(1);
+    auto node2 = std::make_shared<TestNode>(2);
+    auto dead_node = std::make_shared<TestNode>(3);
+    
+    // Add nodes and edges
+    graph.add_node(node1);
+    graph.add_node(node2);
+    graph.add_node(dead_node);
+    graph.add_edge(std::make_shared<Edge<int>>(node1, node2));
+    
+    // Add dead node elimination pass
+    graph.add_optimization_pass(std::make_unique<DeadNodeElimination<int>>());
+    
+    // Execute graph with optimization
+    graph.execute().await_resume();
+    
+    // Check that dead_node was eliminated
+    bool node_exists = false;
+    for (const auto& node : graph.get_nodes()) {
+        if (node == dead_node) {
+            node_exists = true;
+            break;
+        }
+    }
+    assert(!node_exists);
+    std::cout << "Dead node elimination test passed!" << std::endl;
+}
+
+void test_node_fusion() {
+    Graph<int> graph;
+    
+    // Create a chain of nodes
+    auto node1 = std::make_shared<TestNode>(1);
+    auto node2 = std::make_shared<TestNode>(2);
+    auto node3 = std::make_shared<TestNode>(3);
+    
+    // Add nodes and edges to form a chain
+    graph.add_node(node1);
+    graph.add_node(node2);
+    graph.add_node(node3);
+    graph.add_edge(std::make_shared<Edge<int>>(node1, node2));
+    graph.add_edge(std::make_shared<Edge<int>>(node2, node3));
+    
+    // Add node fusion pass
+    graph.add_optimization_pass(std::make_unique<NodeFusion<int>>());
+    
+    // Get initial node count
+    size_t initial_node_count = graph.get_nodes().size();
+    
+    // Execute graph with optimization
+    graph.execute().await_resume();
+    
+    // Check that nodes were fused (node count should be less)
+    assert(graph.get_nodes().size() < initial_node_count);
+    std::cout << "Node fusion test passed!" << std::endl;
+}
+
 void test_lru_cache() {
     Graph<int> graph(std::make_unique<LRUCachePolicy<int>>(2));
     auto node = std::make_shared<TestNode>(42);
@@ -77,6 +140,8 @@ void test_lfu_cache() {
 int main() {
     test_basic_functionality();
     test_graph_creation();
+    test_dead_node_elimination();
+    test_node_fusion();
     test_lru_cache();
     test_lfu_cache();
 

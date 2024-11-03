@@ -7,6 +7,7 @@ CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.o
  /home/runner/workspace/include/flowgraph/cache/cache_policy.hpp
  /home/runner/workspace/include/flowgraph/cache/graph_cache.hpp
  /home/runner/workspace/include/flowgraph/cache/node_cache.hpp
+ /home/runner/workspace/include/flowgraph/optimization/optimization_pass.hpp
  /home/runner/workspace/include/flowgraph/core/concepts.hpp
  /home/runner/workspace/include/flowgraph/core/edge.hpp
  /home/runner/workspace/include/flowgraph/core/graph.hpp
