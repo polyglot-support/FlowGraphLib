@@ -25,6 +25,15 @@ target_link_libraries(flowgraph INTERFACE nlohmann_json::nlohmann_json)
 add_executable(basic_usage examples/basic_usage.cpp)
 target_link_libraries(basic_usage PRIVATE flowgraph)
 
+add_executable(matrix_operations examples/matrix_operations.cpp)
+target_link_libraries(matrix_operations PRIVATE flowgraph)
+
+add_executable(image_pipeline examples/image_pipeline.cpp)
+target_link_libraries(image_pipeline PRIVATE flowgraph)
+
+add_executable(graph_optimization examples/graph_optimization.cpp)
+target_link_libraries(graph_optimization PRIVATE flowgraph)
+
 # Enable testing
 enable_testing()
 add_subdirectory(tests)

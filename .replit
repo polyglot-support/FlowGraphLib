@@ -15,6 +15,14 @@ author = "agent"
 task = "workflow.run"
 args = "Build and Run C++ Example"
 
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Build and Run Examples"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Build and Run All Examples"
+
 [[workflows.workflow]]
 name = "Build and Run C++ Example"
 author = "agent"
@@ -28,6 +36,34 @@ task = "packager.installForAll"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "mkdir -p build && cd build && cmake .. && cmake --build . && (./basic_usage && ./flowgraph_tests)"
+
+[[workflows.workflow]]
+name = "Build and Run Examples"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "mkdir -p build && cd build && cmake .. && make && ./matrix_operations && ./image_pipeline"
+
+[[workflows.workflow]]
+name = "Build and Run All Examples"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "mkdir -p build && cd build && cmake .. && make && ./matrix_operations && ./image_pipeline && ./graph_optimization"
 
 [deployment]
 run = ["sh", "-c", "mkdir -p build && cd build && cmake .. && cmake --build . && (./basic_usage && ./flowgraph_tests)"]
