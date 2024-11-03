@@ -8,6 +8,8 @@
 #include "node.hpp"
 #include "edge.hpp"
 #include "../async/task.hpp"
+#include "../async/thread_pool.hpp"
+#include "../async/future_helpers.hpp"
 #include "../cache/graph_cache.hpp"
 #include "../cache/cache_policy.hpp"
 #include "../optimization/optimization_pass.hpp"
@@ -18,8 +20,10 @@ namespace flowgraph {
 template<NodeValue T>
 class Graph {
 public:
-    explicit Graph(std::unique_ptr<CachePolicy<T>> cache_policy = nullptr)
-        : cache_(std::make_unique<GraphCache<T>>(std::move(cache_policy))) {}
+    explicit Graph(std::unique_ptr<CachePolicy<T>> cache_policy = nullptr,
+                  std::shared_ptr<ThreadPool> thread_pool = nullptr)
+        : cache_(std::make_unique<GraphCache<T>>(std::move(cache_policy))),
+          thread_pool_(thread_pool ? thread_pool : std::make_shared<ThreadPool>()) {}
 
     void add_node(std::shared_ptr<Node<T>> node) {
         nodes_.insert(node);
@@ -52,6 +56,14 @@ public:
         for (const auto& pass : optimization_passes_) {
             pass->optimize(*this);
         }
+    }
+
+    void set_thread_pool(std::shared_ptr<ThreadPool> thread_pool) {
+        thread_pool_ = thread_pool;
+    }
+
+    std::shared_ptr<ThreadPool> get_thread_pool() const {
+        return thread_pool_;
     }
 
     // Serialization support
@@ -135,12 +147,22 @@ public:
         // Run optimization passes before execution
         optimize();
 
+        // Create a vector to store all node execution futures
+        std::vector<std::future<T>> futures;
         std::unordered_set<std::shared_ptr<Node<T>>> visited;
+        
+        // Schedule independent nodes for parallel execution
         for (const auto& node : nodes_) {
-            if (visited.find(node) == visited.end()) {
-                co_await execute_node(node, visited);
+            if (get_incoming_edges(node).empty()) {
+                futures.push_back(execute_node_async(node, visited));
             }
         }
+
+        // Wait for all futures to complete using our helper
+        for (auto& future : futures) {
+            co_await make_task_from_future(std::move(future));
+        }
+
         co_return;
     }
 
@@ -179,33 +201,43 @@ private:
         return false;
     }
 
-    Task<void> execute_node(std::shared_ptr<Node<T>> node,
-                          std::unordered_set<std::shared_ptr<Node<T>>>& visited) {
-        visited.insert(node);
-        
-        // Execute dependencies first
-        for (const auto& edge : edges_) {
-            if (edge->to() == node && visited.find(edge->from()) == visited.end()) {
-                co_await execute_node(edge->from(), visited);
+    std::future<T> execute_node_async(std::shared_ptr<Node<T>> node,
+                                    std::unordered_set<std::shared_ptr<Node<T>>>& visited) {
+        return thread_pool_->enqueue([this, node, &visited]() -> T {
+            visited.insert(node);
+            
+            // Execute dependencies first
+            std::vector<std::future<T>> dep_futures;
+            for (const auto& edge : edges_) {
+                if (edge->to() == node && visited.find(edge->from()) == visited.end()) {
+                    dep_futures.push_back(execute_node_async(edge->from(), visited));
+                }
             }
-        }
 
-        // Execute node and handle caching
-        T result = co_await node->compute();
-        
-        if (cache_) {
-            if (auto cached = cache_->get(result); !cached.has_value()) {
-                cache_->store(result);
+            // Wait for dependencies to complete
+            for (auto& future : dep_futures) {
+                future.wait();
             }
-        }
-        
-        co_return;
+
+            // Execute node and handle caching
+            auto task = node->compute();
+            T result = task.await_resume();
+            
+            if (cache_) {
+                if (auto cached = cache_->get(result); !cached.has_value()) {
+                    cache_->store(result);
+                }
+            }
+            
+            return result;
+        });
     }
 
     std::unordered_set<std::shared_ptr<Node<T>>> nodes_;
     std::unordered_set<std::shared_ptr<Edge<T>>> edges_;
     std::unique_ptr<GraphCache<T>> cache_;
     std::vector<std::unique_ptr<OptimizationPass<T>>> optimization_passes_;
+    std::shared_ptr<ThreadPool> thread_pool_;
 };
 
 } // namespace flowgraph

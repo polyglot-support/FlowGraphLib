@@ -3,16 +3,16 @@
 #include <nlohmann/json.hpp>
 #include "../core/node.hpp"
 #include "../core/edge.hpp"
-#include "../core/graph.hpp"
+#include "../core/concepts.hpp"
 
 namespace flowgraph {
 
 // Forward declarations
-template<typename T>
+template<NodeValue T>
 class Graph;
 
 // Serialization interface
-template<typename T>
+template<NodeValue T>
 class Serializable {
 public:
     virtual ~Serializable() = default;
@@ -21,14 +21,14 @@ public:
 };
 
 // Node serialization specialization
-template<typename T>
+template<NodeValue T>
 nlohmann::json serialize_node(const Node<T>& node) {
     nlohmann::json j;
     j["name"] = node.name();
     return j;
 }
 
-template<typename T>
+template<NodeValue T>
 void deserialize_node(Node<T>& node, const nlohmann::json& j) {
     // Basic node properties
     if (j.contains("name")) {
@@ -37,7 +37,7 @@ void deserialize_node(Node<T>& node, const nlohmann::json& j) {
 }
 
 // Edge serialization
-template<typename T>
+template<NodeValue T>
 nlohmann::json serialize_edge(const Edge<T>& edge) {
     nlohmann::json j;
     j["from"] = edge.from()->name();
@@ -46,7 +46,7 @@ nlohmann::json serialize_edge(const Edge<T>& edge) {
 }
 
 // Graph serialization
-template<typename T>
+template<NodeValue T>
 nlohmann::json serialize_graph(const Graph<T>& graph) {
     nlohmann::json j;
     
