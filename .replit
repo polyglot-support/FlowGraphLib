@@ -1,0 +1,33 @@
+modules = ["cpp", "cpp-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Build and Run C++ Example"
+
+[[workflows.workflow]]
+name = "Build and Run C++ Example"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "mkdir -p build && cd build && cmake .. && cmake --build . && (./basic_usage && ./flowgraph_tests)"
+
+[deployment]
+run = ["sh", "-c", "mkdir -p build && cd build && cmake .. && cmake --build . && (./basic_usage && ./flowgraph_tests)"]
