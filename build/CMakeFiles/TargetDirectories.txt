@@ -1,4 +1,7 @@
 /home/runner/workspace/build/CMakeFiles/basic_usage.dir
+/home/runner/workspace/build/CMakeFiles/matrix_operations.dir
+/home/runner/workspace/build/CMakeFiles/image_pipeline.dir
+/home/runner/workspace/build/CMakeFiles/graph_optimization.dir
 /home/runner/workspace/build/CMakeFiles/test.dir
 /home/runner/workspace/build/CMakeFiles/edit_cache.dir
 /home/runner/workspace/build/CMakeFiles/rebuild_cache.dir

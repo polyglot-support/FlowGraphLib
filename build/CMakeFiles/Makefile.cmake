@@ -59,5 +59,8 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/basic_usage.dir/DependInfo.cmake"
+  "CMakeFiles/matrix_operations.dir/DependInfo.cmake"
+  "CMakeFiles/image_pipeline.dir/DependInfo.cmake"
+  "CMakeFiles/graph_optimization.dir/DependInfo.cmake"
   "tests/CMakeFiles/flowgraph_tests.dir/DependInfo.cmake"
   )

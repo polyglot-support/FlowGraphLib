@@ -140,6 +140,45 @@ basic_usage/fast:
 .PHONY : basic_usage/fast
 
 #=============================================================================
+# Target rules for targets named matrix_operations
+
+# Build rule for target.
+matrix_operations: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 matrix_operations
+.PHONY : matrix_operations
+
+# fast build rule for target.
+matrix_operations/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/matrix_operations.dir/build.make CMakeFiles/matrix_operations.dir/build
+.PHONY : matrix_operations/fast
+
+#=============================================================================
+# Target rules for targets named image_pipeline
+
+# Build rule for target.
+image_pipeline: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 image_pipeline
+.PHONY : image_pipeline
+
+# fast build rule for target.
+image_pipeline/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_pipeline.dir/build.make CMakeFiles/image_pipeline.dir/build
+.PHONY : image_pipeline/fast
+
+#=============================================================================
+# Target rules for targets named graph_optimization
+
+# Build rule for target.
+graph_optimization: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 graph_optimization
+.PHONY : graph_optimization
+
+# fast build rule for target.
+graph_optimization/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/graph_optimization.dir/build.make CMakeFiles/graph_optimization.dir/build
+.PHONY : graph_optimization/fast
+
+#=============================================================================
 # Target rules for targets named flowgraph_tests
 
 # Build rule for target.
@@ -176,6 +215,78 @@ examples/basic_usage.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/basic_usage.dir/build.make CMakeFiles/basic_usage.dir/examples/basic_usage.cpp.s
 .PHONY : examples/basic_usage.cpp.s
 
+examples/graph_optimization.o: examples/graph_optimization.cpp.o
+.PHONY : examples/graph_optimization.o
+
+# target to build an object file
+examples/graph_optimization.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/graph_optimization.dir/build.make CMakeFiles/graph_optimization.dir/examples/graph_optimization.cpp.o
+.PHONY : examples/graph_optimization.cpp.o
+
+examples/graph_optimization.i: examples/graph_optimization.cpp.i
+.PHONY : examples/graph_optimization.i
+
+# target to preprocess a source file
+examples/graph_optimization.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/graph_optimization.dir/build.make CMakeFiles/graph_optimization.dir/examples/graph_optimization.cpp.i
+.PHONY : examples/graph_optimization.cpp.i
+
+examples/graph_optimization.s: examples/graph_optimization.cpp.s
+.PHONY : examples/graph_optimization.s
+
+# target to generate assembly for a file
+examples/graph_optimization.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/graph_optimization.dir/build.make CMakeFiles/graph_optimization.dir/examples/graph_optimization.cpp.s
+.PHONY : examples/graph_optimization.cpp.s
+
+examples/image_pipeline.o: examples/image_pipeline.cpp.o
+.PHONY : examples/image_pipeline.o
+
+# target to build an object file
+examples/image_pipeline.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_pipeline.dir/build.make CMakeFiles/image_pipeline.dir/examples/image_pipeline.cpp.o
+.PHONY : examples/image_pipeline.cpp.o
+
+examples/image_pipeline.i: examples/image_pipeline.cpp.i
+.PHONY : examples/image_pipeline.i
+
+# target to preprocess a source file
+examples/image_pipeline.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_pipeline.dir/build.make CMakeFiles/image_pipeline.dir/examples/image_pipeline.cpp.i
+.PHONY : examples/image_pipeline.cpp.i
+
+examples/image_pipeline.s: examples/image_pipeline.cpp.s
+.PHONY : examples/image_pipeline.s
+
+# target to generate assembly for a file
+examples/image_pipeline.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/image_pipeline.dir/build.make CMakeFiles/image_pipeline.dir/examples/image_pipeline.cpp.s
+.PHONY : examples/image_pipeline.cpp.s
+
+examples/matrix_operations.o: examples/matrix_operations.cpp.o
+.PHONY : examples/matrix_operations.o
+
+# target to build an object file
+examples/matrix_operations.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/matrix_operations.dir/build.make CMakeFiles/matrix_operations.dir/examples/matrix_operations.cpp.o
+.PHONY : examples/matrix_operations.cpp.o
+
+examples/matrix_operations.i: examples/matrix_operations.cpp.i
+.PHONY : examples/matrix_operations.i
+
+# target to preprocess a source file
+examples/matrix_operations.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/matrix_operations.dir/build.make CMakeFiles/matrix_operations.dir/examples/matrix_operations.cpp.i
+.PHONY : examples/matrix_operations.cpp.i
+
+examples/matrix_operations.s: examples/matrix_operations.cpp.s
+.PHONY : examples/matrix_operations.s
+
+# target to generate assembly for a file
+examples/matrix_operations.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/matrix_operations.dir/build.make CMakeFiles/matrix_operations.dir/examples/matrix_operations.cpp.s
+.PHONY : examples/matrix_operations.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -187,9 +298,21 @@ help:
 	@echo "... test"
 	@echo "... basic_usage"
 	@echo "... flowgraph_tests"
+	@echo "... graph_optimization"
+	@echo "... image_pipeline"
+	@echo "... matrix_operations"
 	@echo "... examples/basic_usage.o"
 	@echo "... examples/basic_usage.i"
 	@echo "... examples/basic_usage.s"
+	@echo "... examples/graph_optimization.o"
+	@echo "... examples/graph_optimization.i"
+	@echo "... examples/graph_optimization.s"
+	@echo "... examples/image_pipeline.o"
+	@echo "... examples/image_pipeline.i"
+	@echo "... examples/image_pipeline.s"
+	@echo "... examples/matrix_operations.o"
+	@echo "... examples/matrix_operations.i"
+	@echo "... examples/matrix_operations.s"
 .PHONY : help
 
 
