@@ -67,6 +67,8 @@ all: CMakeFiles/basic_usage.dir/all
 all: CMakeFiles/matrix_operations.dir/all
 all: CMakeFiles/image_pipeline.dir/all
 all: CMakeFiles/graph_optimization.dir/all
+all: CMakeFiles/neural_network.dir/all
+all: CMakeFiles/signal_processing.dir/all
 all: _deps/json-build/all
 all: tests/all
 .PHONY : all
@@ -81,6 +83,8 @@ clean: CMakeFiles/basic_usage.dir/clean
 clean: CMakeFiles/matrix_operations.dir/clean
 clean: CMakeFiles/image_pipeline.dir/clean
 clean: CMakeFiles/graph_optimization.dir/clean
+clean: CMakeFiles/neural_network.dir/clean
+clean: CMakeFiles/signal_processing.dir/clean
 clean: _deps/json-build/clean
 clean: tests/clean
 .PHONY : clean
@@ -218,6 +222,58 @@ graph_optimization: CMakeFiles/graph_optimization.dir/rule
 CMakeFiles/graph_optimization.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/graph_optimization.dir/build.make CMakeFiles/graph_optimization.dir/clean
 .PHONY : CMakeFiles/graph_optimization.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/neural_network.dir
+
+# All Build rule for target.
+CMakeFiles/neural_network.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/workspace/build/CMakeFiles --progress-num=12,13 "Built target neural_network"
+.PHONY : CMakeFiles/neural_network.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/neural_network.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/neural_network.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 0
+.PHONY : CMakeFiles/neural_network.dir/rule
+
+# Convenience name for target.
+neural_network: CMakeFiles/neural_network.dir/rule
+.PHONY : neural_network
+
+# clean rule for target.
+CMakeFiles/neural_network.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/clean
+.PHONY : CMakeFiles/neural_network.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/signal_processing.dir
+
+# All Build rule for target.
+CMakeFiles/signal_processing.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/runner/workspace/build/CMakeFiles --progress-num=14,15 "Built target signal_processing"
+.PHONY : CMakeFiles/signal_processing.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/signal_processing.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/signal_processing.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/runner/workspace/build/CMakeFiles 0
+.PHONY : CMakeFiles/signal_processing.dir/rule
+
+# Convenience name for target.
+signal_processing: CMakeFiles/signal_processing.dir/rule
+.PHONY : signal_processing
+
+# clean rule for target.
+CMakeFiles/signal_processing.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/clean
+.PHONY : CMakeFiles/signal_processing.dir/clean
 
 #=============================================================================
 # Target rules for target tests/CMakeFiles/flowgraph_tests.dir

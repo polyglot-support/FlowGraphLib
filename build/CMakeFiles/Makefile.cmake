@@ -62,5 +62,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/matrix_operations.dir/DependInfo.cmake"
   "CMakeFiles/image_pipeline.dir/DependInfo.cmake"
   "CMakeFiles/graph_optimization.dir/DependInfo.cmake"
+  "CMakeFiles/neural_network.dir/DependInfo.cmake"
+  "CMakeFiles/signal_processing.dir/DependInfo.cmake"
   "tests/CMakeFiles/flowgraph_tests.dir/DependInfo.cmake"
   )

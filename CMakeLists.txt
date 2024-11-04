@@ -34,6 +34,12 @@ target_link_libraries(image_pipeline PRIVATE flowgraph)
 add_executable(graph_optimization examples/graph_optimization.cpp)
 target_link_libraries(graph_optimization PRIVATE flowgraph)
 
+add_executable(neural_network examples/neural_network.cpp)
+target_link_libraries(neural_network PRIVATE flowgraph)
+
+add_executable(signal_processing examples/signal_processing.cpp)
+target_link_libraries(signal_processing PRIVATE flowgraph)
+
 # Enable testing
 enable_testing()
 add_subdirectory(tests)

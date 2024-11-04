@@ -179,6 +179,32 @@ graph_optimization/fast:
 .PHONY : graph_optimization/fast
 
 #=============================================================================
+# Target rules for targets named neural_network
+
+# Build rule for target.
+neural_network: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 neural_network
+.PHONY : neural_network
+
+# fast build rule for target.
+neural_network/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/build
+.PHONY : neural_network/fast
+
+#=============================================================================
+# Target rules for targets named signal_processing
+
+# Build rule for target.
+signal_processing: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 signal_processing
+.PHONY : signal_processing
+
+# fast build rule for target.
+signal_processing/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/build
+.PHONY : signal_processing/fast
+
+#=============================================================================
 # Target rules for targets named flowgraph_tests
 
 # Build rule for target.
@@ -287,6 +313,54 @@ examples/matrix_operations.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/matrix_operations.dir/build.make CMakeFiles/matrix_operations.dir/examples/matrix_operations.cpp.s
 .PHONY : examples/matrix_operations.cpp.s
 
+examples/neural_network.o: examples/neural_network.cpp.o
+.PHONY : examples/neural_network.o
+
+# target to build an object file
+examples/neural_network.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/examples/neural_network.cpp.o
+.PHONY : examples/neural_network.cpp.o
+
+examples/neural_network.i: examples/neural_network.cpp.i
+.PHONY : examples/neural_network.i
+
+# target to preprocess a source file
+examples/neural_network.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/examples/neural_network.cpp.i
+.PHONY : examples/neural_network.cpp.i
+
+examples/neural_network.s: examples/neural_network.cpp.s
+.PHONY : examples/neural_network.s
+
+# target to generate assembly for a file
+examples/neural_network.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/neural_network.dir/build.make CMakeFiles/neural_network.dir/examples/neural_network.cpp.s
+.PHONY : examples/neural_network.cpp.s
+
+examples/signal_processing.o: examples/signal_processing.cpp.o
+.PHONY : examples/signal_processing.o
+
+# target to build an object file
+examples/signal_processing.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/examples/signal_processing.cpp.o
+.PHONY : examples/signal_processing.cpp.o
+
+examples/signal_processing.i: examples/signal_processing.cpp.i
+.PHONY : examples/signal_processing.i
+
+# target to preprocess a source file
+examples/signal_processing.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/examples/signal_processing.cpp.i
+.PHONY : examples/signal_processing.cpp.i
+
+examples/signal_processing.s: examples/signal_processing.cpp.s
+.PHONY : examples/signal_processing.s
+
+# target to generate assembly for a file
+examples/signal_processing.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/signal_processing.dir/build.make CMakeFiles/signal_processing.dir/examples/signal_processing.cpp.s
+.PHONY : examples/signal_processing.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -301,6 +375,8 @@ help:
 	@echo "... graph_optimization"
 	@echo "... image_pipeline"
 	@echo "... matrix_operations"
+	@echo "... neural_network"
+	@echo "... signal_processing"
 	@echo "... examples/basic_usage.o"
 	@echo "... examples/basic_usage.i"
 	@echo "... examples/basic_usage.s"
@@ -313,6 +389,12 @@ help:
 	@echo "... examples/matrix_operations.o"
 	@echo "... examples/matrix_operations.i"
 	@echo "... examples/matrix_operations.s"
+	@echo "... examples/neural_network.o"
+	@echo "... examples/neural_network.i"
+	@echo "... examples/neural_network.s"
+	@echo "... examples/signal_processing.o"
+	@echo "... examples/signal_processing.i"
+	@echo "... examples/signal_processing.s"
 .PHONY : help
 
 
