@@ -29,8 +29,19 @@ elseif(EMSCRIPTEN)
         -s EXPORTED_FUNCTIONS=['_malloc','_free']
     )
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    # Clang flags for C++20
+    add_compile_options(-std=c++20)
+    
+    # Additional optimization and warning flags
+    add_compile_options(-Wall -Wextra -Wpedantic)
+    
+    if(APPLE)
+        # macOS-specific flags for concepts and coroutines
+        add_compile_options(-stdlib=libc++)
+    endif()
 else()
-    # GCC/Clang flags for C++20
+    # GCC flags for C++20
     add_compile_options(-std=c++20 -fconcepts -fcoroutines)
     
     # Additional optimization and warning flags

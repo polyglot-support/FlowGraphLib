@@ -55,26 +55,40 @@ jobs:
           - arch: x64
             cc: gcc
             cxx: g++
+            packages: "llvm-dev libpcre3-dev"
           - arch: arm64
             cc: aarch64-linux-gnu-gcc
             cxx: aarch64-linux-gnu-g++
+            packages: >-
+              gcc-aarch64-linux-gnu
+              g++-aarch64-linux-gnu
+              llvm-dev:arm64
+              libpcre3-dev:arm64
+              libstdc++-11-dev:arm64
+              libc6-dev:arm64
     steps:
     - uses: actions/checkout@v3
-    - name: Install ARM64 toolchain
-      if: matrix.arch == 'arm64'
+    
+    - name: Set up dependencies
       run: |
+        sudo dpkg --add-architecture arm64
         sudo apt-get update
-        sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-    - name: Install regex dependencies
-      run: |
-        sudo apt-get install -y libpcre3-dev
+        sudo apt-get install -y ${{ matrix.packages }}
+        
     - name: Configure CMake
       env:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DBENCHMARK_ENABLE_TESTING=OFF
+      run: |
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
+          -DBENCHMARK_ENABLE_TESTING=OFF \
+          -DBENCHMARK_USE_BUNDLED_GTEST=ON \
+          -DCMAKE_CXX_FLAGS="${{ matrix.arch == 'arm64' && '-Wno-psabi' || '' }}"
+        
     - name: Build
       run: cmake --build build
+      
     - name: Test
       if: matrix.arch == 'x64'  # Only run tests on native architecture
       run: |
@@ -89,7 +103,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} -DBENCHMARK_ENABLE_TESTING=OFF
+      run: |
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
+          -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
+          -DBENCHMARK_ENABLE_TESTING=OFF \
+          -DBENCHMARK_USE_BUNDLED_GTEST=ON
     - name: Build
       run: cmake --build build
     - name: Test
