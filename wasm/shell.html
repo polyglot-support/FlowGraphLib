@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FlowGraphLib WASM Demo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        #container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #output {
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>FlowGraphLib WASM Demo</h1>
+        <button id="runDemo">Run Demo</button>
+        <div id="output"></div>
+    </div>
+
+    <script>
+        var Module = {
+            print: function(text) {
+                const output = document.getElementById('output');
+                output.textContent += text + '\n';
+            },
+            printErr: function(text) {
+                const output = document.getElementById('output');
+                output.textContent += 'Error: ' + text + '\n';
+            },
+            onRuntimeInitialized: function() {
+                document.getElementById('runDemo').disabled = false;
+            }
+        };
+
+        document.getElementById('runDemo').addEventListener('click', function() {
+            const output = document.getElementById('output');
+            output.textContent = ''; // Clear previous output
+            
+            try {
+                // Call the WASM function
+                Module.ccall('main', 'number', [], []);
+            } catch (e) {
+                output.textContent += 'Error: ' + e + '\n';
+            }
+        });
+    </script>
+    <script async src="flowgraph_wasm.js"></script>
+</body>
+</html>

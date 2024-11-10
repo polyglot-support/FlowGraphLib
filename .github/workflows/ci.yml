@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [x86, x64]
+        include:
+          - arch: x86
+            generator: "Visual Studio 17 2022"
+            arch-flag: "-A Win32"
+          - arch: x64
+            generator: "Visual Studio 17 2022"
+            arch-flag: "-A x64"
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure CMake
+      run: cmake -B build -G "${{ matrix.generator }}" ${{ matrix.arch-flag }}
+    - name: Build
+      run: cmake --build build --config Release
+    - name: Test
+      run: |
+        cd build
+        ctest -C Release --output-on-failure
+
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+        include:
+          - arch: x64
+            cc: gcc
+            cxx: g++
+          - arch: arm64
+            cc: aarch64-linux-gnu-gcc
+            cxx: aarch64-linux-gnu-g++
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install ARM64 toolchain
+      if: matrix.arch == 'arm64'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
+    - name: Configure CMake
+      env:
+        CC: ${{ matrix.cc }}
+        CXX: ${{ matrix.cxx }}
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+    - name: Build
+      run: cmake --build build
+    - name: Test
+      if: matrix.arch == 'x64'  # Only run tests on native architecture
+      run: |
+        cd build
+        ctest --output-on-failure
+
+  build-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [x64, arm64]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
+    - name: Build
+      run: cmake --build build
+    - name: Test
+      if: matrix.arch == 'x64'  # Only run tests on native architecture
+      run: |
+        cd build
+        ctest --output-on-failure
