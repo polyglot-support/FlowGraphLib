@@ -38,7 +38,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure CMake
-      run: cmake -B build -G "${{ matrix.generator }}" ${{ matrix.arch-flag }} -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }}
+      run: cmake -B build -G "${{ matrix.generator }}" ${{ matrix.arch-flag }} -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DBUILD_BENCHMARKS=OFF
     - name: Build
       run: cmake --build build --config ${{ inputs.build_type || 'Release' }}
     - name: Test
@@ -82,8 +82,7 @@ jobs:
       run: |
         cmake -B build \
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
-          -DBENCHMARK_ENABLE_TESTING=OFF \
-          -DBENCHMARK_USE_BUNDLED_GTEST=ON \
+          -DBUILD_BENCHMARKS=OFF \
           -DCMAKE_CXX_FLAGS="${{ matrix.arch == 'arm64' && '-Wno-psabi' || '' }}"
         
     - name: Build
@@ -107,8 +106,7 @@ jobs:
         cmake -B build \
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
           -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }} \
-          -DBENCHMARK_ENABLE_TESTING=OFF \
-          -DBENCHMARK_USE_BUNDLED_GTEST=ON
+          -DBUILD_BENCHMARKS=OFF
     - name: Build
       run: cmake --build build
     - name: Test
