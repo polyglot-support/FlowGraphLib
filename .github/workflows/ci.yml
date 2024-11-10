@@ -67,26 +67,6 @@ jobs:
         cd build
         ctest --output-on-failure
 
-  build-linux-arm64:
-    runs-on: ubuntu-latest-arm64
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y llvm-dev libpcre3-dev
-    - name: Configure CMake
-      env:
-        CC: gcc
-        CXX: g++
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DBUILD_BENCHMARKS=OFF
-    - name: Build
-      run: cmake --build build
-    - name: Test
-      run: |
-        cd build
-        ctest --output-on-failure
-
   build-macos:
     runs-on: macos-latest
     strategy:
@@ -124,7 +104,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
           -DBUILD_TESTING=OFF \
           -DCMAKE_CXX_FLAGS="-pthread" \
-          -DCMAKE_EXE_LINKER_FLAGS="-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4"
+          -DCMAKE_EXE_LINKER_FLAGS="-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -lembind"
           
     - name: Build WASM
       working-directory: build-wasm

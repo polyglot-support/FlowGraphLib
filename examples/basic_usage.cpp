@@ -6,7 +6,6 @@
 #include "../include/flowgraph/core/edge.hpp"
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
 #include <emscripten/bind.h>
 #endif
 
@@ -80,17 +79,13 @@ void run_example() {
 } // namespace example
 } // namespace flowgraph
 
-// Main function that can be called from both native and WASM environments
-extern "C" {
-    int main() {
-        flowgraph::example::run_example();
-        return 0;
-    }
-}
-
 #ifdef __EMSCRIPTEN__
-// WASM bindings
 EMSCRIPTEN_BINDINGS(flowgraph) {
     emscripten::function("runExample", &flowgraph::example::run_example);
 }
 #endif
+
+int main() {
+    flowgraph::example::run_example();
+    return 0;
+}
