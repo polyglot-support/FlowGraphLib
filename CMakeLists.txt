@@ -6,6 +6,17 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Fetch pybind11 if building Python bindings
+if(BUILD_PYTHON_BINDINGS)
+    include(FetchContent)
+    FetchContent_Declare(
+        pybind11
+        GIT_REPOSITORY https://github.com/pybind/pybind11.git
+        GIT_TAG v2.11.1
+    )
+    FetchContent_MakeAvailable(pybind11)
+endif()
+
 # Add compiler-specific flags for C++20 features
 if(MSVC)
     # Visual Studio 2019 version 16.11 or later required for C++20
@@ -93,5 +104,15 @@ if(EMSCRIPTEN)
         ${CMAKE_SOURCE_DIR}/wasm/shell.html
         ${CMAKE_BINARY_DIR}/shell.html
         COPYONLY
+    )
+endif()
+
+# Python bindings
+if(BUILD_PYTHON_BINDINGS)
+    pybind11_add_module(flowgraph_python python/flowgraph.hpp)
+    target_link_libraries(flowgraph_python PRIVATE flowgraph)
+    set_target_properties(flowgraph_python PROPERTIES
+        OUTPUT_NAME "flowgraph"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/python"
     )
 endif()

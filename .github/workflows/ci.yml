@@ -104,7 +104,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
           -DBUILD_TESTING=OFF \
           -DCMAKE_CXX_FLAGS="-pthread" \
-          -DCMAKE_EXE_LINKER_FLAGS="-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -lembind"
+          -DCMAKE_EXE_LINKER_FLAGS="-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4"
           
     - name: Build WASM
       working-directory: build-wasm
@@ -118,3 +118,37 @@ jobs:
           build-wasm/*.wasm
           build-wasm/*.js
           build-wasm/*.html
+
+  test-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+        
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y llvm-dev libpcre3-dev
+        python -m pip install --upgrade pip
+        python -m pip install pytest
+        
+    - name: Configure CMake
+      run: |
+        cmake -B build \
+          -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
+          -DBUILD_PYTHON_BINDINGS=ON
+          
+    - name: Build
+      run: cmake --build build
+      
+    - name: Python Tests
+      run: |
+        cd build/python
+        PYTHONPATH=. python -m pytest ../../python/test_flowgraph.py -v

@@ -64,6 +64,7 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
 - CMake 3.20 or higher
 - Google Test (automatically fetched for testing)
 - Emscripten (for WebAssembly build)
+- Python 3.8+ with pytest (for Python bindings)
 
 ## Installation
 
@@ -75,16 +76,16 @@ cd FlowGraphLib
 # Create build directory
 mkdir build && cd build
 
-# Configure and build
-cmake ..
+# Configure and build (with Python bindings)
+cmake .. -DBUILD_PYTHON_BINDINGS=ON
 cmake --build .
 
 # Run tests
 ctest
 
-# Build WebAssembly version (requires Emscripten)
-emcmake cmake ..
-emmake make
+# Run Python tests
+cd python
+PYTHONPATH=. python -m pytest ../../python/test_flowgraph.py -v
 ```
 
 ## Basic Usage
@@ -129,7 +130,26 @@ const results = graph.execute();
 console.log(results);
 ```
 
-For more examples, check out:
+For more Python examples:
+- [Basic Usage](python/example.py)
+- [Unit Tests](python/test_flowgraph.py)
+
+Python Features:
+- Full graph creation and manipulation
+- Node and edge management
+- Precision control
+- Optimization settings
+- Error handling and reporting
+- Native Python dictionary results
+- Comprehensive test suite
+
+### WebAssembly/JavaScript ([wasm/flowgraph.hpp](wasm/flowgraph.hpp))
+
+[Previous WebAssembly section remains unchanged...]
+
+## Examples
+
+C++ Examples:
 - [Basic Usage](examples/basic_usage.cpp)
 - [Graph Optimization](examples/graph_optimization.cpp)
 - [Image Pipeline](examples/image_pipeline.cpp)
@@ -137,13 +157,23 @@ For more examples, check out:
 - [Neural Network](examples/neural_network.cpp)
 - [Signal Processing](examples/signal_processing.cpp)
 
+Python Examples:
+- [Basic Usage](python/example.py)
+- [Unit Tests](python/test_flowgraph.py)
+
+JavaScript Examples:
+- [Interactive Web Demo](wasm/shell.html)
+
 ## Testing
 
 The library includes comprehensive tests:
-- [Error Propagation Tests](tests/error_propagation_test.cpp)
-- [Precision Management Tests](tests/precision_management_test.cpp)
-- [Fractal Tree Tests](tests/fractal_tree_test.cpp)
-- [Performance Benchmarks](tests/fractal_tree_benchmark.cpp)
+- C++ Tests:
+  - [Error Propagation Tests](tests/error_propagation_test.cpp)
+  - [Precision Management Tests](tests/precision_management_test.cpp)
+  - [Fractal Tree Tests](tests/fractal_tree_test.cpp)
+  - [Performance Benchmarks](tests/fractal_tree_benchmark.cpp)
+- Python Tests:
+  - [Python Unit Tests](python/test_flowgraph.py)
 
 ## Contributing
 
