@@ -71,21 +71,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up ARM64 environment
+    - name: Install Dependencies
       run: |
-        sudo dpkg --add-architecture arm64
-        sudo tee /etc/apt/sources.list.d/arm64.list > /dev/null <<EOT
-        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted
-        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted
-        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted
-        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-security main restricted
-        EOT
         sudo apt-get update
         sudo apt-get install -y \
           gcc-aarch64-linux-gnu \
           g++-aarch64-linux-gnu \
-          llvm-dev:arm64 \
-          libpcre3-dev:arm64
+          llvm-dev \
+          libpcre3-dev
     - name: Configure CMake
       env:
         CC: aarch64-linux-gnu-gcc
@@ -131,11 +124,11 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
           -DBUILD_TESTING=OFF \
           -DCMAKE_CXX_FLAGS="-pthread" \
-          -DCMAKE_EXE_LINKER_FLAGS="-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4"
+          -DCMAKE_EXE_LINKER_FLAGS="SHELL:-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4"
           
     - name: Build WASM
       working-directory: build-wasm
-      run: cmake --build .
+      run: emmake make
       
     - name: Upload WASM artifacts
       uses: actions/upload-artifact@v3
