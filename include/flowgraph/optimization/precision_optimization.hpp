@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <queue>
 #include "../core/node.hpp"
+#include "../core/graph.hpp"
 #include "optimization_pass.hpp"
 
 namespace flowgraph {
@@ -11,6 +12,10 @@ class PrecisionOptimizationPass : public OptimizationPass<T> {
 public:
     PrecisionOptimizationPass(double error_threshold = 0.001)
         : error_threshold_(error_threshold) {}
+
+    std::string name() const override {
+        return "Precision Optimization Pass";
+    }
 
     void optimize(Graph<T>& graph) override {
         // Build node dependency map and identify output nodes
@@ -23,9 +28,12 @@ public:
         // Start with output nodes and work backwards
         std::queue<std::shared_ptr<Node<T>>> node_queue;
         for (const auto& output_node : output_nodes) {
-            node_queue.push(output_node);
-            // Output nodes maintain their current precision level
-            precision_requirements[output_node] = output_node->current_precision_level();
+            auto typed_node = std::dynamic_pointer_cast<Node<T>>(output_node);
+            if (typed_node) {
+                node_queue.push(typed_node);
+                // Output nodes maintain their current precision level
+                precision_requirements[typed_node] = typed_node->current_precision_level();
+            }
         }
 
         // Propagate precision requirements backwards through the graph
@@ -38,7 +46,8 @@ public:
             // Get incoming edges (dependencies)
             auto incoming_edges = graph.get_incoming_edges(current_node);
             for (const auto& edge : incoming_edges) {
-                auto dependency = edge->from();
+                auto dependency = std::dynamic_pointer_cast<Node<T>>(edge->from());
+                if (!dependency) continue;
                 
                 // Calculate required precision for dependency
                 size_t required_precision = calculate_required_precision(
@@ -69,7 +78,6 @@ public:
             }
             catch (const std::exception& e) {
                 // Log error but continue with other nodes
-                // In practice, you might want to use a proper logging system
                 std::cerr << "Error optimizing precision for node " << node->name() 
                          << ": " << e.what() << std::endl;
             }
@@ -80,13 +88,13 @@ private:
     size_t calculate_required_precision(
         size_t target_precision,
         const std::shared_ptr<Node<T>>& dependency,
-        const std::shared_ptr<Node<T>>& dependent
+        const std::shared_ptr<Node<T>>& /* dependent */  // Mark as intentionally unused
     ) {
         // Base case: maintain same precision
         size_t required_precision = target_precision;
 
         // Adjust based on error propagation history
-        auto recent_errors = analyze_error_history(dependency, dependent);
+        auto recent_errors = analyze_error_history(dependency);
         if (recent_errors > error_threshold_) {
             // Increase precision if errors are high
             required_precision = std::min(
@@ -105,12 +113,10 @@ private:
         return required_precision;
     }
 
-    double analyze_error_history(
-        const std::shared_ptr<Node<T>>& dependency,
-        const std::shared_ptr<Node<T>>& dependent
-    ) {
+    double analyze_error_history(const std::shared_ptr<Node<T>>& dependency) {
         // In a real implementation, this would analyze actual error history
         // For now, return a default value
+        (void)dependency; // Mark as intentionally unused
         return error_threshold_ / 2;
     }
 

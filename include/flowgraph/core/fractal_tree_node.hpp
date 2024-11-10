@@ -9,8 +9,9 @@
 
 namespace flowgraph {
 
-// Forward declaration
+// Forward declaration with matching requires clause
 template<typename T>
+    requires NodeValue<T>
 class FractalTreeNode;
 
 // Struct to hold pending updates
@@ -21,6 +22,7 @@ struct PendingUpdate {
 };
 
 template<typename T>
+    requires NodeValue<T>
 class FractalTreeNode {
 public:
     using value_type = T;
@@ -74,7 +76,11 @@ public:
     // Merge all pending updates into absolute values
     void merge_all() {
         std::lock_guard<std::mutex> lock(mutex_);
+        std::vector<size_t> levels;
         for (const auto& [level, _] : pending_updates_) {
+            levels.push_back(level);
+        }
+        for (auto level : levels) {
             merge_level(level);
         }
         compress_tree();
@@ -91,25 +97,35 @@ private:
             return;
         }
 
-        T merged_value;
-        double total_weight = 0.0;
+        // Initialize merged_value with the first update
+        T merged_value = updates_it->second[0].value;
+        double total_weight = updates_it->second[0].weight;
 
-        // Weighted average of pending updates
-        for (const auto& update : updates_it->second) {
-            if (total_weight == 0.0) {
-                merged_value = update.value;
+        // Weighted average of remaining updates
+        for (size_t i = 1; i < updates_it->second.size(); ++i) {
+            const auto& update = updates_it->second[i];
+            // For arithmetic types, use weighted average
+            if constexpr (std::is_arithmetic_v<T>) {
+                double new_weight = total_weight + update.weight;
+                merged_value = static_cast<T>(
+                    (merged_value * total_weight + update.value * update.weight) / new_weight
+                );
+                total_weight = new_weight;
             } else {
-                // Assuming T supports these operations
-                merged_value = merged_value * (total_weight / (total_weight + update.weight)) +
-                             update.value * (update.weight / (total_weight + update.weight));
+                // For non-arithmetic types, just use the latest value
+                merged_value = update.value;
             }
-            total_weight += update.weight;
         }
 
         // Update absolute value
         if (auto it = absolute_values_.find(level); it != absolute_values_.end()) {
-            // Combine with existing absolute value
-            it->second = it->second * 0.7 + merged_value * 0.3; // Exponential moving average
+            // For arithmetic types, use exponential moving average
+            if constexpr (std::is_arithmetic_v<T>) {
+                it->second = static_cast<T>(it->second * 0.7 + merged_value * 0.3);
+            } else {
+                // For non-arithmetic types, just use the latest value
+                it->second = merged_value;
+            }
         } else {
             absolute_values_[level] = merged_value;
         }
@@ -141,19 +157,22 @@ private:
 
     // Expand a value from one precision level to another
     T expand_value(const T& value, size_t from_level, size_t to_level) const {
-        // Simple implementation - in practice, this would depend on the specific type T
-        // and how precision levels are defined for that type
-        return value;
+        if constexpr (std::is_arithmetic_v<T>) {
+            // For arithmetic types, adjust precision based on level difference
+            size_t level_diff = to_level - from_level;
+            double scale = std::pow(10.0, static_cast<double>(level_diff));
+            return static_cast<T>(std::round(static_cast<double>(value) * scale) / scale);
+        } else {
+            return value;
+        }
     }
 
     // Calculate difference between two values (type-dependent)
     double difference(const T& a, const T& b) const {
-        // Simple implementation - in practice, this would need to be specialized
-        // for different types
         if constexpr (std::is_arithmetic_v<T>) {
             return std::abs(static_cast<double>(a) - static_cast<double>(b));
         } else {
-            return 0.0; // Default implementation
+            return a == b ? 0.0 : 1.0;
         }
     }
 
@@ -162,8 +181,8 @@ private:
     static constexpr size_t merge_threshold_ = 10;
     
     mutable std::mutex mutex_;
-    std::unordered_map<size_t, T> absolute_values_;
-    std::unordered_map<size_t, std::vector<PendingUpdate<T>>> pending_updates_;
+    mutable std::unordered_map<size_t, T> absolute_values_;
+    mutable std::unordered_map<size_t, std::vector<PendingUpdate<T>>> pending_updates_;
 };
 
 } // namespace flowgraph

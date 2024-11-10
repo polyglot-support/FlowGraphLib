@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <nlohmann/json.hpp>
+#include <memory>
 #include "../core/node.hpp"
 #include "../core/edge.hpp"
 #include "../core/concepts.hpp"
@@ -8,65 +8,44 @@
 namespace flowgraph {
 
 // Forward declarations
-template<NodeValue T>
+template<typename T>
 class Graph;
 
-// Serialization interface
-template<NodeValue T>
-class Serializable {
-public:
-    virtual ~Serializable() = default;
-    virtual nlohmann::json to_json() const = 0;
-    virtual void from_json(const nlohmann::json& j) = 0;
-};
-
-// Node serialization specialization
-template<NodeValue T>
-nlohmann::json serialize_node(const Node<T>& node) {
-    nlohmann::json j;
-    j["name"] = node.name();
-    return j;
+// Basic serialization functions
+template<typename T>
+std::string serialize_node(const Node<T>& node) {
+    return node.name();
 }
 
-template<NodeValue T>
-void deserialize_node(Node<T>& node, const nlohmann::json& j) {
-    // Basic node properties
-    if (j.contains("name")) {
-        // Note: name is readonly after construction
-    }
+template<typename T>
+void deserialize_node(Node<T>& node, const std::string& s) {
+    // Note: name is readonly after construction
 }
 
-// Edge serialization
-template<NodeValue T>
-nlohmann::json serialize_edge(const Edge<T>& edge) {
-    nlohmann::json j;
-    j["from"] = edge.from()->name();
-    j["to"] = edge.to()->name();
-    return j;
+template<typename T>
+std::string serialize_edge(const Edge<T>& edge) {
+    return edge.from()->name() + "->" + edge.to()->name();
 }
 
-// Graph serialization
-template<NodeValue T>
-nlohmann::json serialize_graph(const Graph<T>& graph) {
-    nlohmann::json j;
+template<typename T>
+std::string serialize_graph(const Graph<T>& graph) {
+    std::string result;
     
     // Serialize nodes
-    nlohmann::json nodes = nlohmann::json::array();
+    result += "Nodes:\n";
     for (const auto& node : graph.get_nodes()) {
-        nodes.push_back(serialize_node(*node));
+        result += serialize_node(*node) + "\n";
     }
-    j["nodes"] = nodes;
     
     // Serialize edges
-    nlohmann::json edges = nlohmann::json::array();
+    result += "Edges:\n";
     for (const auto& node : graph.get_nodes()) {
         for (const auto& edge : graph.get_outgoing_edges(node)) {
-            edges.push_back(serialize_edge(*edge));
+            result += serialize_edge(*edge) + "\n";
         }
     }
-    j["edges"] = edges;
     
-    return j;
+    return result;
 }
 
 } // namespace flowgraph

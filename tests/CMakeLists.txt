@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.14)
-
 # Download and configure Google Test
 include(FetchContent)
 FetchContent_Declare(
@@ -12,28 +10,26 @@ FetchContent_Declare(
 FetchContent_Declare(
     benchmark
     GIT_REPOSITORY https://github.com/google/benchmark.git
-    GIT_TAG v1.7.1
+    GIT_TAG v1.8.3
 )
 
-# Make both available
+# Make dependencies available
+set(BENCHMARK_ENABLE_TESTING OFF)
 FetchContent_MakeAvailable(googletest benchmark)
 
-# Enable testing
-enable_testing()
-
-# Create test executable
+# Add test executable
 add_executable(flowgraph_tests
     main.cpp
-    precision_management_test.cpp
     error_propagation_test.cpp
+    precision_management_test.cpp
 )
 
-# Create benchmark executable
+# Add benchmark executable
 add_executable(flowgraph_benchmarks
     fractal_tree_benchmark.cpp
 )
 
-# Link test executable
+# Link test executable against Google Test and our library
 target_link_libraries(flowgraph_tests
     PRIVATE
     gtest
@@ -41,7 +37,7 @@ target_link_libraries(flowgraph_tests
     flowgraph
 )
 
-# Link benchmark executable
+# Link benchmark executable against Google Benchmark and our library
 target_link_libraries(flowgraph_benchmarks
     PRIVATE
     benchmark
@@ -49,24 +45,53 @@ target_link_libraries(flowgraph_benchmarks
     flowgraph
 )
 
+# Inherit C++20 settings from parent
+target_compile_features(flowgraph_tests PRIVATE cxx_std_20)
+target_compile_features(flowgraph_benchmarks PRIVATE cxx_std_20)
+
+# Add compiler-specific flags
+if(MSVC)
+    target_compile_options(flowgraph_tests PRIVATE 
+        /std:c++latest 
+        /Zc:__cplusplus 
+        /EHsc 
+        /permissive- 
+        /await:strict
+        /W4  # Removed /WX to allow warnings during development
+    )
+    target_compile_options(flowgraph_benchmarks PRIVATE 
+        /std:c++latest 
+        /Zc:__cplusplus 
+        /EHsc 
+        /permissive- 
+        /await:strict
+        /W4  # Removed /WX to allow warnings during development
+    )
+    target_compile_definitions(flowgraph_tests PRIVATE 
+        _HAS_CXX20=1
+    )
+    target_compile_definitions(flowgraph_benchmarks PRIVATE 
+        _HAS_CXX20=1
+    )
+else()
+    target_compile_options(flowgraph_tests PRIVATE 
+        -std=c++20 
+        -fconcepts
+        -fcoroutines
+        -Wall 
+        -Wextra 
+        -Wpedantic
+    )
+    target_compile_options(flowgraph_benchmarks PRIVATE 
+        -std=c++20 
+        -fconcepts
+        -fcoroutines
+        -Wall 
+        -Wextra 
+        -Wpedantic
+    )
+endif()
+
 # Add tests to CTest
 include(GoogleTest)
 gtest_discover_tests(flowgraph_tests)
-
-# Set include directories for both executables
-target_include_directories(flowgraph_tests
-    PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-)
-
-target_include_directories(flowgraph_benchmarks
-    PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-)
-
-# Set C++ standard for both executables
-set_target_properties(flowgraph_tests flowgraph_benchmarks
-    PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-)

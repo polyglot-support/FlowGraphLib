@@ -1,45 +1,42 @@
-cmake_minimum_required(VERSION 3.16)
-project(flowgraph CXX)
+cmake_minimum_required(VERSION 3.20)
+project(FlowGraphLib VERSION 0.1.0)
 
+# Set C++20 standard and enable latest features
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
-# Include FetchContent for downloading dependencies
-include(FetchContent)
+# Add compiler-specific flags for C++20 features
+if(MSVC)
+    # Visual Studio 2019 version 16.11 or later required for C++20
+    add_compile_options(/std:c++latest /Zc:__cplusplus /EHsc /permissive-)
+    
+    # Enable concepts and coroutines
+    add_compile_definitions(_HAS_CXX20=1)
+    add_compile_options(/await:strict)
+    
+    # Additional optimization and warning flags
+    add_compile_options(/W4)  # Removed /WX to allow warnings during development
+else()
+    # GCC/Clang flags for C++20
+    add_compile_options(-std=c++20 -fconcepts -fcoroutines)
+    
+    # Additional optimization and warning flags
+    add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-# Fetch nlohmann/json
-FetchContent_Declare(json
-    URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
-)
-FetchContent_MakeAvailable(json)
+# Add include directories
+include_directories(${CMAKE_SOURCE_DIR})
 
-# Library headers
+# Add core library target
 add_library(flowgraph INTERFACE)
-target_include_directories(flowgraph INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-)
-target_link_libraries(flowgraph INTERFACE nlohmann_json::nlohmann_json)
-
-# Examples
-add_executable(basic_usage examples/basic_usage.cpp)
-target_link_libraries(basic_usage PRIVATE flowgraph)
-
-add_executable(matrix_operations examples/matrix_operations.cpp)
-target_link_libraries(matrix_operations PRIVATE flowgraph)
-
-add_executable(image_pipeline examples/image_pipeline.cpp)
-target_link_libraries(image_pipeline PRIVATE flowgraph)
-
-add_executable(graph_optimization examples/graph_optimization.cpp)
-target_link_libraries(graph_optimization PRIVATE flowgraph)
-
-add_executable(neural_network examples/neural_network.cpp)
-target_link_libraries(neural_network PRIVATE flowgraph)
-
-add_executable(signal_processing examples/signal_processing.cpp)
-target_link_libraries(signal_processing PRIVATE flowgraph)
+target_include_directories(flowgraph INTERFACE ${CMAKE_SOURCE_DIR})
 
 # Enable testing
 enable_testing()
 add_subdirectory(tests)
+
+# Set output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

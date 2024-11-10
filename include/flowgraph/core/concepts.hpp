@@ -1,25 +1,35 @@
 #pragma once
-#include <concepts>
 #include <type_traits>
+#include <concepts>
 
 namespace flowgraph {
 
-// Concept for types that can be used as node values
+// Core value type requirements
 template<typename T>
-concept NodeValue = std::movable<T> && std::copyable<T>;
+concept NodeValue = std::is_default_constructible_v<T> &&
+                   std::is_copy_constructible_v<T> &&
+                   std::is_move_constructible_v<T> &&
+                   std::is_copy_assignable_v<T> &&
+                   std::is_move_assignable_v<T>;
 
-// Concept for callback functions
-template<typename F, typename T>
-concept NodeCallback = std::invocable<F, T>;
+// Computation requirements
+template<typename T>
+concept Computable = requires(T a) {
+    { a.compute() } -> std::convertible_to<bool>;
+};
 
-// Concept for cache policy interface validation
-template<typename T, typename Policy>
-concept CachePolicyInterface = requires(Policy& policy, const T& value) {
-    { policy.should_cache(value) } -> std::same_as<bool>;
-    { policy.on_access(value) } -> std::same_as<void>;
-    { policy.on_insert(value) } -> std::same_as<void>;
-    { policy.select_victim() } -> std::same_as<T>;
-    { policy.max_size() } -> std::same_as<std::size_t>;
+// Serialization requirements
+template<typename T>
+concept Serializable = requires(T a) {
+    { a.serialize() } -> std::convertible_to<std::string>;
+    { T::deserialize(std::string{}) } -> std::convertible_to<T>;
+};
+
+// Optimization requirements
+template<typename T>
+concept Optimizable = requires(T a) {
+    { a.optimize() } -> std::same_as<void>;
+    { a.can_optimize() } -> std::same_as<bool>;
 };
 
 } // namespace flowgraph

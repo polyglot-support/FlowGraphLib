@@ -1,12 +1,12 @@
 #pragma once
 #include <string>
 #include <optional>
-#include <memory>
 #include <vector>
+#include "forward_decl.hpp"
 
 namespace flowgraph {
 
-// Enum for different types of errors that can occur in nodes
+// Error handling
 enum class ErrorType {
     None,
     ComputationError,     // Error during node computation
@@ -78,33 +78,6 @@ private:
     std::string message_;
     std::optional<std::string> source_node_;
     std::vector<std::string> propagation_path_;
-};
-
-// Class to hold computation result with error state
-template<typename T>
-class ComputeResult {
-public:
-    ComputeResult() : error_state_(ErrorType::None, "") {}
-    
-    ComputeResult(T value) : value_(std::move(value)), error_state_(ErrorType::None, "") {}
-    
-    ComputeResult(ErrorState error) : error_state_(std::move(error)) {}
-
-    bool has_error() const { return error_state_.has_error(); }
-    const ErrorState& error() const { return error_state_; }
-    
-    const T& value() const { 
-        if (has_error()) {
-            throw std::runtime_error("Attempting to access value of failed computation");
-        }
-        return value_.value();
-    }
-
-    bool has_value() const { return value_.has_value(); }
-
-private:
-    std::optional<T> value_;
-    ErrorState error_state_;
 };
 
 } // namespace flowgraph

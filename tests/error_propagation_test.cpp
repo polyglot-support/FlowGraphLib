@@ -1,9 +1,17 @@
 #include <gtest/gtest.h>
 #include <memory>
 #include <stdexcept>
-#include "../include/flowgraph/core/node.hpp"
-#include "../include/flowgraph/core/graph.hpp"
+#include "../include/flowgraph/core/concepts.hpp"
 #include "../include/flowgraph/core/error_state.hpp"
+#include "../include/flowgraph/core/node.hpp"
+#include "../include/flowgraph/core/edge.hpp"
+#include "../include/flowgraph/core/graph.hpp"
+#include "../include/flowgraph/async/task.hpp"
+#include "../include/flowgraph/async/thread_pool.hpp"
+#include "../include/flowgraph/async/future_helpers.hpp"
+#include "../include/flowgraph/cache/graph_cache.hpp"
+#include "../include/flowgraph/cache/cache_policy.hpp"
+#include "../include/flowgraph/optimization/optimization_pass.hpp"
 
 namespace flowgraph {
 namespace test {
@@ -87,7 +95,8 @@ TEST_F(ErrorPropagationTest, LinearPropagation) {
     graph_->add_edge(std::make_shared<Edge<double>>(node2, node3));
 
     // Execute graph and verify error propagation
-    graph_->execute().get();
+    auto task = graph_->execute();
+    task.get();
     
     auto result = node3->compute().get();
     EXPECT_TRUE(result.has_error());
@@ -117,7 +126,8 @@ TEST_F(ErrorPropagationTest, DiamondPropagation) {
     graph_->add_edge(std::make_shared<Edge<double>>(branch2, sink));
 
     // Execute graph and verify error propagation
-    graph_->execute().get();
+    auto task = graph_->execute();
+    task.get();
     
     auto result = sink->compute().get();
     EXPECT_TRUE(result.has_error());
@@ -142,7 +152,8 @@ TEST_F(ErrorPropagationTest, MultipleErrorSources) {
     graph_->add_edge(std::make_shared<Edge<double>>(node2, node3));
 
     // Execute graph and verify error handling
-    graph_->execute().get();
+    auto task = graph_->execute();
+    task.get();
     
     auto result = node3->compute().get();
     EXPECT_TRUE(result.has_error());
