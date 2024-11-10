@@ -68,24 +68,24 @@ jobs:
         ctest --output-on-failure
 
   build-linux-arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm64
     steps:
     - uses: actions/checkout@v3
     - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y \
-          gcc-aarch64-linux-gnu \
-          g++-aarch64-linux-gnu \
-          llvm-dev \
-          libpcre3-dev
+        sudo apt-get install -y llvm-dev libpcre3-dev
     - name: Configure CMake
       env:
-        CC: aarch64-linux-gnu-gcc
-        CXX: aarch64-linux-gnu-g++
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DBUILD_BENCHMARKS=OFF -DCMAKE_CXX_FLAGS="-Wno-psabi"
+        CC: gcc
+        CXX: g++
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DBUILD_BENCHMARKS=OFF
     - name: Build
       run: cmake --build build
+    - name: Test
+      run: |
+        cd build
+        ctest --output-on-failure
 
   build-macos:
     runs-on: macos-latest
