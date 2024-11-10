@@ -5,6 +5,28 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Enable debug build'
+        required: false
+        default: false
+        type: boolean
+      optimization_level:
+        description: 'Emscripten optimization level'
+        required: false
+        default: '3'
+        type: choice
+        options:
+          - '0'
+          - '1'
+          - '2'
+          - '3'
+      enable_threads:
+        description: 'Enable WASM threads'
+        required: false
+        default: true
+        type: boolean
 
 jobs:
   build-wasm:
@@ -22,9 +44,11 @@ jobs:
         mkdir build-wasm
         cd build-wasm
         emcmake cmake .. \
-          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_BUILD_TYPE=${{ inputs.debug_enabled && 'Debug' || 'Release' }} \
           -DBUILD_TESTING=OFF \
-          -DCMAKE_EXECUTABLE_SUFFIX=".js"
+          -DCMAKE_EXECUTABLE_SUFFIX=".js" \
+          -DOPTIMIZATION_LEVEL=${{ inputs.optimization_level || '3' }} \
+          -DENABLE_THREADS=${{ inputs.enable_threads || true }}
           
     - name: Build WASM
       run: |
@@ -39,3 +63,12 @@ jobs:
           build-wasm/*.wasm
           build-wasm/*.js
           build-wasm/*.html
+        
+    - name: Upload debug symbols
+      if: inputs.debug_enabled
+      uses: actions/upload-artifact@v3
+      with:
+        name: flowgraph-wasm-debug
+        path: |
+          build-wasm/*.wasm.map
+          build-wasm/*.js.map

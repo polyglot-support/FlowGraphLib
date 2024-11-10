@@ -5,6 +5,22 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Run with debug logging'
+        required: false
+        default: false
+        type: boolean
+      build_type:
+        description: 'Build type'
+        required: false
+        default: 'Release'
+        type: choice
+        options:
+          - Debug
+          - Release
+          - RelWithDebInfo
 
 jobs:
   build-windows:
@@ -22,13 +38,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure CMake
-      run: cmake -B build -G "${{ matrix.generator }}" ${{ matrix.arch-flag }}
+      run: cmake -B build -G "${{ matrix.generator }}" ${{ matrix.arch-flag }} -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }}
     - name: Build
-      run: cmake --build build --config Release
+      run: cmake --build build --config ${{ inputs.build_type || 'Release' }}
     - name: Test
       run: |
         cd build
-        ctest -C Release --output-on-failure
+        ctest -C ${{ inputs.build_type || 'Release' }} --output-on-failure
 
   build-linux:
     runs-on: ubuntu-latest
@@ -53,7 +69,7 @@ jobs:
       env:
         CC: ${{ matrix.cc }}
         CXX: ${{ matrix.cxx }}
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }}
     - name: Build
       run: cmake --build build
     - name: Test
@@ -70,7 +86,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} -DCMAKE_OSX_ARCHITECTURES=${{ matrix.arch }}
     - name: Build
       run: cmake --build build
     - name: Test
