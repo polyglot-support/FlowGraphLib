@@ -5,74 +5,53 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
 ## Features
 
 - **Modern C++20 Design**
-  - Utilizes C++20 coroutines for asynchronous execution
-  - Concepts for compile-time interface validation
-  - Thread-safe operations
+  - Utilizes C++20 coroutines for asynchronous execution ([async/task.hpp](include/flowgraph/async/task.hpp))
+  - Concepts for compile-time interface validation ([core/concepts.hpp](include/flowgraph/core/concepts.hpp))
+  - Thread-safe operations ([async/thread_pool.hpp](include/flowgraph/async/thread_pool.hpp))
 
 - **Core Functionality**
-  - Directed Acyclic Graph (DAG) structure
-  - Asynchronous node execution
-  - Flexible node and edge types
-  - Callback system for execution events
+  - Directed Acyclic Graph (DAG) structure ([core/graph.hpp](include/flowgraph/core/graph.hpp))
+  - Asynchronous node execution ([core/node.hpp](include/flowgraph/core/node.hpp))
+  - Flexible node and edge types ([core/edge.hpp](include/flowgraph/core/edge.hpp))
+  - Callback system for execution events ([core/node.hpp](include/flowgraph/core/node.hpp))
 
 - **Advanced Features**
-  - Fractal Tree Node structure for efficient value storage
-  - Dynamic precision scaling with automatic optimization
-  - Efficient compression mechanisms
-  - Thread pool support for parallel execution
-  - Comprehensive error handling and propagation
-  - Memory-aware precision management
-
-- **Precision Management**
-  - Expansive/compressive fractal tree structure
-  - Dynamic precision level adjustment
-  - Automatic precision optimization
-  - Memory-aware compression
-  - Precision-aware node fusion
-  - Parallel path precision balancing
+  - Fractal Tree Node structure for efficient value storage ([core/fractal_tree_node.hpp](include/flowgraph/core/fractal_tree_node.hpp))
+  - Dynamic precision scaling with automatic optimization ([optimization/precision_optimization.hpp](include/flowgraph/optimization/precision_optimization.hpp))
+  - Efficient compression mechanisms ([optimization/compression_optimization.hpp](include/flowgraph/optimization/compression_optimization.hpp))
+  - Thread pool support for parallel execution ([async/thread_pool.hpp](include/flowgraph/async/thread_pool.hpp))
+  - Comprehensive error handling and propagation ([core/error_state.hpp](include/flowgraph/core/error_state.hpp))
 
 - **Error Handling**
-  - Comprehensive error type system
-  - Error propagation tracking
-  - Source node identification
-  - Error path tracing
-  - Recovery mechanisms
-  - Error-aware optimization
+  - Comprehensive error type system ([core/error_state.hpp](include/flowgraph/core/error_state.hpp))
+  - Error propagation tracking ([core/compute_result.hpp](include/flowgraph/core/compute_result.hpp))
+  - Source node identification ([core/error_state.hpp](include/flowgraph/core/error_state.hpp))
+  - Error path tracing ([core/graph.hpp](include/flowgraph/core/graph.hpp))
+  - Recovery mechanisms ([core/node.hpp](include/flowgraph/core/node.hpp))
 
 - **Caching System**
-  - Fractal tree-based caching
-  - Precision-aware cache policies
-  - Local node-level caching
-  - Graph-wide caching support
-  - Customizable cache policies (LRU, LFU)
-  - Thread-safe cache operations
+  - Fractal tree-based caching ([cache/fractal_cache_policy.hpp](include/flowgraph/cache/fractal_cache_policy.hpp))
+  - Precision-aware cache policies ([cache/cache_policy.hpp](include/flowgraph/cache/cache_policy.hpp))
+  - Local node-level caching ([cache/node_cache.hpp](include/flowgraph/cache/node_cache.hpp))
+  - Graph-wide caching support ([cache/graph_cache.hpp](include/flowgraph/cache/graph_cache.hpp))
 
 - **Optimization Features**
-  - Precision-aware node fusion
-  - Memory-aware compression
-  - Dead node elimination
-  - Node fusion optimization
-  - Lazy evaluation support
-  - Custom optimization passes
-
-- **Serialization Support**
-  - JSON serialization for graphs
-  - Custom serialization formats
-  - Complete graph state preservation
+  - Node fusion optimization ([optimization/node_fusion.hpp](include/flowgraph/optimization/node_fusion.hpp))
+  - Dead node elimination ([optimization/dead_node_elimination.hpp](include/flowgraph/optimization/dead_node_elimination.hpp))
+  - Custom optimization passes ([optimization/optimization_pass.hpp](include/flowgraph/optimization/optimization_pass.hpp))
 
 ## Requirements
 
 - C++20 compliant compiler
-- CMake 3.16 or higher
-- nlohmann/json library (automatically fetched by CMake)
-- Google Test and Google Benchmark (automatically fetched for testing)
+- CMake 3.20 or higher
+- Google Test (automatically fetched for testing)
 
 ## Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/flowgraph.git
-cd flowgraph
+git clone https://github.com/polyglot-support/FlowGraphLib.git
+cd FlowGraphLib
 
 # Create build directory
 mkdir build && cd build
@@ -91,137 +70,27 @@ Here's a simple example demonstrating basic usage of the library:
 
 ```cpp
 #include <flowgraph/core/graph.hpp>
+#include <flowgraph/core/node.hpp>
+#include <flowgraph/core/edge.hpp>
 
-using namespace flowgraph;
-
-// Create a custom node with precision support
-class SquareNode : public Node<double> {
-public:
-    SquareNode(double input) 
-        : Node<double>("square", 8) // Support up to 8 precision levels
-        , input_(input) {}
-
-protected:
-    Task<ComputeResult<double>> compute_impl(size_t precision_level) override {
-        try {
-            // Compute with specified precision
-            double result = std::round(input_ * input_ * std::pow(10, precision_level)) 
-                          / std::pow(10, precision_level);
-            co_return ComputeResult<double>(result);
-        } catch (const std::exception& e) {
-            auto error = ErrorState::computation_error(e.what());
-            error.set_source_node(this->name());
-            co_return ComputeResult<double>(std::move(error));
-        }
-    }
-
-private:
-    double input_;
-};
-
-int main() {
-    // Create graph
-    Graph<double> graph;
-
-    // Create nodes with precision support
-    auto node1 = std::make_shared<SquareNode>(5.123456789);
-    auto node2 = std::make_shared<SquareNode>(10.987654321);
-
-    // Set precision ranges
-    node1->set_precision_range(2, 6); // Precision between 2 and 6 decimal places
-    node2->set_precision_range(2, 6);
-
-    // Add completion callbacks with error handling
-    node1->add_completion_callback([](const ComputeResult<double>& result) {
-        if (result.has_error()) {
-            std::cerr << "Error in node 1: " << result.error().message() << std::endl;
-        } else {
-            std::cout << "Node 1 result: " << result.value() << std::endl;
-        }
-    });
-
-    // Add nodes to graph
-    graph.add_node(node1);
-    graph.add_node(node2);
-
-    // Create edge
-    auto edge = std::make_shared<Edge<double>>(node1, node2);
-    graph.add_edge(edge);
-
-    // Add optimization passes
-    graph.add_optimization_pass(std::make_unique<PrecisionOptimizationPass<double>>());
-    graph.add_optimization_pass(std::make_unique<CompressionOptimizationPass<double>>());
-
-    // Execute graph
-    graph.execute().await_resume();
-
-    return 0;
-}
+// For a complete working example, see examples/basic_usage.cpp
 ```
 
-## Advanced Features
+For more examples, check out:
+- [Basic Usage](examples/basic_usage.cpp)
+- [Graph Optimization](examples/graph_optimization.cpp)
+- [Image Pipeline](examples/image_pipeline.cpp)
+- [Matrix Operations](examples/matrix_operations.cpp)
+- [Neural Network](examples/neural_network.cpp)
+- [Signal Processing](examples/signal_processing.cpp)
 
-### Precision Management
+## Testing
 
-```cpp
-// Create node with precision support
-auto node = std::make_shared<ComputeNode<double>>("precise_node", 8);
-
-// Set precision range
-node->set_precision_range(2, 6);
-
-// Dynamic precision adjustment
-node->adjust_precision(4);
-
-// Force compression
-node->merge_updates();
-```
-
-### Error Handling
-
-```cpp
-// Add error-aware callback
-node->add_completion_callback([](const ComputeResult<double>& result) {
-    if (result.has_error()) {
-        const auto& error = result.error();
-        std::cout << "Error type: " << static_cast<int>(error.type()) << std::endl;
-        std::cout << "Source node: " << error.source_node().value() << std::endl;
-        std::cout << "Error path: ";
-        for (const auto& node : error.propagation_path()) {
-            std::cout << node << " -> ";
-        }
-        std::cout << std::endl;
-    }
-});
-```
-
-### Memory-Aware Optimization
-
-```cpp
-// Add memory-aware optimization passes
-graph.add_optimization_pass(std::make_unique<CompressionOptimizationPass<double>>(
-    0.8,  // Compress when memory usage exceeds 80%
-    0.2   // Consider nodes inactive below 20% access rate
-));
-
-// Add precision-aware node fusion
-graph.add_optimization_pass(std::make_unique<PrecisionAwareNodeFusion<double>>(
-    0.1,  // Precision compatibility threshold
-    2     // Minimum operations for fusion
-));
-```
-
-### Fractal Cache Policy
-
-```cpp
-// Create graph with fractal tree cache
-Graph<double> graph(std::make_unique<FractalCachePolicy<double>>(
-    1000,   // Max entries per precision level
-    0.001   // Compression threshold
-));
-
-// Cache automatically manages precision levels
-```
+The library includes comprehensive tests:
+- [Error Propagation Tests](tests/error_propagation_test.cpp)
+- [Precision Management Tests](tests/precision_management_test.cpp)
+- [Fractal Tree Tests](tests/fractal_tree_test.cpp)
+- [Performance Benchmarks](tests/fractal_tree_benchmark.cpp)
 
 ## Contributing
 
