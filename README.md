@@ -52,15 +52,18 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
   - Forward declarations ([core/forward_decl.hpp](include/flowgraph/core/forward_decl.hpp))
 
 - **WebAssembly Support**
-  - WASM build configuration ([wasm/shell.html](wasm/shell.html))
-  - Browser integration
+  - JavaScript API for graph operations ([wasm/flowgraph.hpp](wasm/flowgraph.hpp))
+  - Browser integration ([wasm/shell.html](wasm/shell.html))
   - Thread pool support in browser
+  - Interactive graph visualization
+  - Error handling and reporting
 
 ## Requirements
 
 - C++20 compliant compiler
 - CMake 3.20 or higher
 - Google Test (automatically fetched for testing)
+- Emscripten (for WebAssembly build)
 
 ## Installation
 
@@ -78,6 +81,10 @@ cmake --build .
 
 # Run tests
 ctest
+
+# Build WebAssembly version (requires Emscripten)
+emcmake cmake ..
+emmake make
 ```
 
 ## Basic Usage
@@ -90,6 +97,36 @@ Here's a simple example demonstrating basic usage of the library:
 #include <flowgraph/core/edge.hpp>
 
 // For a complete working example, see examples/basic_usage.cpp
+```
+
+## JavaScript Usage
+
+The library can be used in web browsers via WebAssembly:
+
+```javascript
+// Create a new graph
+const graph = new Module.FlowGraph();
+
+// Create nodes
+const node1 = graph.createNode("input1", 5.0);
+const node2 = graph.createNode("input2", 3.0);
+const node3 = graph.createNode("output", 0.0);
+
+// Connect nodes
+graph.connectNodes(node1, node3);
+graph.connectNodes(node2, node3);
+
+// Set precision
+graph.setPrecision(node1, 4);
+graph.setPrecision(node2, 4);
+graph.setPrecision(node3, 4);
+
+// Enable optimization
+graph.enableOptimization(true, true);
+
+// Execute and get results
+const results = graph.execute();
+console.log(results);
 ```
 
 For more examples, check out:

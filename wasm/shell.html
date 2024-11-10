@@ -44,41 +44,119 @@
             color: #333;
             margin-bottom: 20px;
         }
+        #graph-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
     <div id="container">
         <h1>FlowGraphLib WASM Demo</h1>
-        <button id="runDemo">Run Demo</button>
+        
+        <div id="graph-container">
+            <h2>Graph Operations</h2>
+            <button onclick="createSimpleGraph()">Create Simple Graph</button>
+            <button onclick="runOptimizedGraph()">Run Optimized Graph</button>
+            <button onclick="clearOutput()">Clear Output</button>
+        </div>
+
         <div id="output"></div>
     </div>
 
     <script>
+        // Initialize Module
         var Module = {
-            print: function(text) {
-                const output = document.getElementById('output');
-                output.textContent += text + '\n';
-            },
-            printErr: function(text) {
-                const output = document.getElementById('output');
-                output.textContent += 'Error: ' + text + '\n';
-            },
             onRuntimeInitialized: function() {
-                document.getElementById('runDemo').disabled = false;
+                log("FlowGraphLib WASM initialized");
             }
         };
 
-        document.getElementById('runDemo').addEventListener('click', function() {
+        function log(text) {
             const output = document.getElementById('output');
-            output.textContent = ''; // Clear previous output
-            
+            output.textContent += text + '\n';
+        }
+
+        function clearOutput() {
+            document.getElementById('output').textContent = '';
+        }
+
+        function createSimpleGraph() {
             try {
-                // Call the WASM function
-                Module.ccall('main', 'number', [], []);
+                const graph = new Module.FlowGraph();
+                
+                // Create nodes
+                const node1 = graph.createNode("input1", 5.0);
+                const node2 = graph.createNode("input2", 3.0);
+                const node3 = graph.createNode("output", 0.0);
+
+                // Connect nodes
+                graph.connectNodes(node1, node3);
+                graph.connectNodes(node2, node3);
+
+                // Set precision
+                graph.setPrecision(node1, 4);
+                graph.setPrecision(node2, 4);
+                graph.setPrecision(node3, 4);
+
+                // Execute and get results
+                const results = graph.execute();
+                
+                log("Graph execution results:");
+                for (const [id, value] of Object.entries(results)) {
+                    if (value.error) {
+                        log(`Node ${id}: Error - ${value.error} (from ${value.source})`);
+                    } else {
+                        log(`Node ${id}: ${value}`);
+                    }
+                }
+
             } catch (e) {
-                output.textContent += 'Error: ' + e + '\n';
+                log("Error: " + e);
             }
-        });
+        }
+
+        function runOptimizedGraph() {
+            try {
+                const graph = new Module.FlowGraph();
+                
+                // Create a more complex graph
+                const nodes = [];
+                for (let i = 0; i < 5; i++) {
+                    nodes.push(graph.createNode(`node${i}`, i * 2.5));
+                }
+
+                // Create connections
+                for (let i = 0; i < nodes.length - 1; i++) {
+                    graph.connectNodes(nodes[i], nodes[i + 1]);
+                }
+
+                // Enable optimization
+                graph.enableOptimization(true, true);
+
+                // Set varying precision levels
+                nodes.forEach((node, i) => {
+                    graph.setPrecision(node, i + 2);
+                });
+
+                // Execute and get results
+                const results = graph.execute();
+                
+                log("Optimized graph results:");
+                for (const [id, value] of Object.entries(results)) {
+                    if (value.error) {
+                        log(`Node ${id}: Error - ${value.error} (from ${value.source})`);
+                    } else {
+                        log(`Node ${id}: ${value}`);
+                    }
+                }
+
+            } catch (e) {
+                log("Error: " + e);
+            }
+        }
     </script>
     <script async src="flowgraph_wasm.js"></script>
 </body>

@@ -28,6 +28,10 @@ elseif(EMSCRIPTEN)
         "SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
         "SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free']"
         "SHELL:-s WASM=1"
+        "SHELL:-s MODULARIZE=1"
+        "SHELL:-s EXPORT_NAME='createModule'"
+        "SHELL:-s NO_EXIT_RUNTIME=1"
+        "SHELL:-s ASSERTIONS=1"
     )
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Clang flags for C++20
@@ -68,12 +72,26 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # WASM-specific targets
 if(EMSCRIPTEN)
-    # Add WASM example
-    add_executable(flowgraph_wasm examples/basic_usage.cpp)
+    # Add WASM library
+    add_executable(flowgraph_wasm wasm/flowgraph.hpp examples/basic_usage.cpp)
     target_link_libraries(flowgraph_wasm PRIVATE flowgraph)
     
     # Configure WASM output
     set_target_properties(flowgraph_wasm PROPERTIES
-        LINK_FLAGS "--shell-file ${CMAKE_SOURCE_DIR}/wasm/shell.html"
+        LINK_FLAGS "--shell-file ${CMAKE_SOURCE_DIR}/wasm/shell.html \
+                   -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] \
+                   -s EXPORTED_FUNCTIONS=['_malloc','_free'] \
+                   -s ALLOW_MEMORY_GROWTH=1 \
+                   -s MODULARIZE=1 \
+                   -s EXPORT_NAME='createModule' \
+                   -s NO_EXIT_RUNTIME=1 \
+                   -s ASSERTIONS=1"
+    )
+
+    # Copy shell.html to build directory
+    configure_file(
+        ${CMAKE_SOURCE_DIR}/wasm/shell.html
+        ${CMAKE_BINARY_DIR}/shell.html
+        COPYONLY
     )
 endif()
