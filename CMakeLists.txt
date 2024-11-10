@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(FlowGraphLib VERSION 0.1.0)
+project(FlowGraphLib VERSION 0.1.0 LANGUAGES CXX)
 
 # Set C++20 standard and enable latest features
 set(CMAKE_CXX_STANDARD 20)
@@ -43,6 +43,7 @@ elseif(EMSCRIPTEN)
         "SHELL:-s EXPORT_NAME='createModule'"
         "SHELL:-s NO_EXIT_RUNTIME=1"
         "SHELL:-s ASSERTIONS=1"
+        "SHELL:-lembind"
     )
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Clang flags for C++20
@@ -96,7 +97,8 @@ if(EMSCRIPTEN)
                    -s MODULARIZE=1 \
                    -s EXPORT_NAME='createModule' \
                    -s NO_EXIT_RUNTIME=1 \
-                   -s ASSERTIONS=1"
+                   -s ASSERTIONS=1 \
+                   -lembind"
     )
 
     # Copy shell.html to build directory
@@ -110,9 +112,10 @@ endif()
 # Python bindings
 if(BUILD_PYTHON_BINDINGS)
     pybind11_add_module(flowgraph_python python/flowgraph.hpp)
-    target_link_libraries(flowgraph_python PRIVATE flowgraph)
     set_target_properties(flowgraph_python PROPERTIES
         OUTPUT_NAME "flowgraph"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/python"
+        LINKER_LANGUAGE CXX
     )
+    target_link_libraries(flowgraph_python PRIVATE flowgraph)
 endif()
