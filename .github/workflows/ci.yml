@@ -55,7 +55,11 @@ jobs:
           - arch: x64
             cc: gcc
             cxx: g++
-            packages: "llvm-dev libpcre3-dev"
+            packages: >-
+              llvm-dev
+              libpcre3-dev
+              libstdc++-11-dev
+              libc6-dev
           - arch: arm64
             cc: aarch64-linux-gnu-gcc
             cxx: aarch64-linux-gnu-g++
@@ -71,7 +75,9 @@ jobs:
     
     - name: Set up dependencies
       run: |
-        sudo dpkg --add-architecture arm64
+        if [ "${{ matrix.arch }}" = "arm64" ]; then
+          sudo dpkg --add-architecture arm64
+        fi
         sudo apt-get update
         sudo apt-get install -y ${{ matrix.packages }}
         
