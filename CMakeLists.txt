@@ -20,15 +20,17 @@ if(MSVC)
 elseif(EMSCRIPTEN)
     # WASM-specific settings
     set(CMAKE_EXECUTABLE_SUFFIX ".js")
-    add_compile_options(
-        -std=c++20
-        -s USE_PTHREADS=1
-        -s PTHREAD_POOL_SIZE=4
-        -s ALLOW_MEMORY_GROWTH=1
-        -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']
-        -s EXPORTED_FUNCTIONS=['_malloc','_free']
+    set(EMSCRIPTEN_PTHREAD_FLAGS
+        "-pthread"
+        "-s USE_PTHREADS=1"
+        "-s PTHREAD_POOL_SIZE=4"
+        "-s ALLOW_MEMORY_GROWTH=1"
+        "-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']"
+        "-s EXPORTED_FUNCTIONS=['_malloc','_free']"
     )
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s WASM=1")
+    add_compile_options(${EMSCRIPTEN_PTHREAD_FLAGS})
+    string(REPLACE ";" " " EMSCRIPTEN_LINK_FLAGS "${EMSCRIPTEN_PTHREAD_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${EMSCRIPTEN_LINK_FLAGS}")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Clang flags for C++20
     add_compile_options(-std=c++20)

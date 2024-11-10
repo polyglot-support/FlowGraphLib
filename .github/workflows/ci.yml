@@ -74,7 +74,12 @@ jobs:
     - name: Set up ARM64 environment
       run: |
         sudo dpkg --add-architecture arm64
-        sudo sed -i 's/http:\/\/security.ubuntu.com/http:\/\/ports.ubuntu.com/g' /etc/apt/sources.list
+        sudo tee /etc/apt/sources.list.d/arm64.list > /dev/null <<EOT
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted
+        deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-security main restricted
+        EOT
         sudo apt-get update
         sudo apt-get install -y \
           gcc-aarch64-linux-gnu \
@@ -119,18 +124,19 @@ jobs:
       uses: mymindstorm/setup-emsdk@v12
       with:
         version: latest
+        
     - name: Configure CMake
       run: |
-        mkdir build-wasm
-        cd build-wasm
-        emcmake cmake .. \
+        emcmake cmake -B build-wasm \
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
           -DBUILD_TESTING=OFF \
-          -DCMAKE_EXECUTABLE_SUFFIX=".js"
+          -DCMAKE_CXX_FLAGS="-pthread" \
+          -DCMAKE_EXE_LINKER_FLAGS="-pthread -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4"
+          
     - name: Build WASM
-      run: |
-        cd build-wasm
-        emmake make
+      working-directory: build-wasm
+      run: cmake --build .
+      
     - name: Upload WASM artifacts
       uses: actions/upload-artifact@v3
       with:
