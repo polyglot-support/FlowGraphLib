@@ -8,12 +8,15 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
   - Utilizes C++20 coroutines for asynchronous execution ([async/task.hpp](include/flowgraph/async/task.hpp))
   - Concepts for compile-time interface validation ([core/concepts.hpp](include/flowgraph/core/concepts.hpp))
   - Thread-safe operations ([async/thread_pool.hpp](include/flowgraph/async/thread_pool.hpp))
+  - Future/Promise integration ([async/future_helpers.hpp](include/flowgraph/async/future_helpers.hpp))
 
 - **Core Functionality**
   - Directed Acyclic Graph (DAG) structure ([core/graph.hpp](include/flowgraph/core/graph.hpp))
   - Asynchronous node execution ([core/node.hpp](include/flowgraph/core/node.hpp))
   - Flexible node and edge types ([core/edge.hpp](include/flowgraph/core/edge.hpp))
   - Callback system for execution events ([core/node.hpp](include/flowgraph/core/node.hpp))
+  - Interface-based design ([core/interfaces.hpp](include/flowgraph/core/interfaces.hpp))
+  - Base class templates ([core/base.hpp](include/flowgraph/core/base.hpp))
 
 - **Advanced Features**
   - Fractal Tree Node structure for efficient value storage ([core/fractal_tree_node.hpp](include/flowgraph/core/fractal_tree_node.hpp))
@@ -21,6 +24,7 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
   - Efficient compression mechanisms ([optimization/compression_optimization.hpp](include/flowgraph/optimization/compression_optimization.hpp))
   - Thread pool support for parallel execution ([async/thread_pool.hpp](include/flowgraph/async/thread_pool.hpp))
   - Comprehensive error handling and propagation ([core/error_state.hpp](include/flowgraph/core/error_state.hpp))
+  - Precompiled headers support ([core/pch.hpp](include/flowgraph/core/pch.hpp))
 
 - **Error Handling**
   - Comprehensive error type system ([core/error_state.hpp](include/flowgraph/core/error_state.hpp))
@@ -28,6 +32,7 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
   - Source node identification ([core/error_state.hpp](include/flowgraph/core/error_state.hpp))
   - Error path tracing ([core/graph.hpp](include/flowgraph/core/graph.hpp))
   - Recovery mechanisms ([core/node.hpp](include/flowgraph/core/node.hpp))
+  - Error state templates ([core/templates.hpp](include/flowgraph/core/templates.hpp))
 
 - **Caching System**
   - Fractal tree-based caching ([cache/fractal_cache_policy.hpp](include/flowgraph/cache/fractal_cache_policy.hpp))
@@ -39,6 +44,17 @@ A modern C++20 flowgraph library for asynchronous data flow operations with coro
   - Node fusion optimization ([optimization/node_fusion.hpp](include/flowgraph/optimization/node_fusion.hpp))
   - Dead node elimination ([optimization/dead_node_elimination.hpp](include/flowgraph/optimization/dead_node_elimination.hpp))
   - Custom optimization passes ([optimization/optimization_pass.hpp](include/flowgraph/optimization/optimization_pass.hpp))
+  - Fused node implementation ([optimization/fused_node.hpp](include/flowgraph/optimization/fused_node.hpp))
+
+- **Implementation Details**
+  - Node implementation templates ([core/impl/node_impl.hpp](include/flowgraph/core/impl/node_impl.hpp))
+  - Compute result implementation ([core/impl/compute_result_impl.hpp](include/flowgraph/core/impl/compute_result_impl.hpp))
+  - Forward declarations ([core/forward_decl.hpp](include/flowgraph/core/forward_decl.hpp))
+
+- **WebAssembly Support**
+  - WASM build configuration ([wasm/shell.html](wasm/shell.html))
+  - Browser integration
+  - Thread pool support in browser
 
 ## Requirements
 
