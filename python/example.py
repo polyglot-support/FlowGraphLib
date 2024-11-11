@@ -25,6 +25,7 @@ def simple_example():
     results = graph.execute()
     
     # Print results
+    print("\nBasic example results:")
     for node_id, value in results.items():
         if isinstance(value, dict) and 'error' in value:
             print(f"Node {node_id}: Error - {value['error']} (from {value['source']})")
@@ -63,9 +64,28 @@ def optimized_example():
         else:
             print(f"Node {node_id}: {value}")
 
-if __name__ == "__main__":
-    print("Basic example:")
-    simple_example()
+def error_handling_example():
+    """Demonstrate error handling."""
+    graph = flowgraph.FlowGraph()
     
-    print("\nOptimized example:")
+    # Create nodes
+    node1 = graph.create_node("input", 5.0)
+    
+    # Try invalid operations
+    print("\nError handling example:")
+    
+    # Invalid node connection
+    result = graph.connect_nodes(node1, 999)
+    print(f"Connect to invalid node: {result}")
+    
+    # Invalid precision setting
+    result = graph.set_precision(999, 4)
+    print(f"Set precision on invalid node: {result}")
+
+if __name__ == "__main__":
+    print("FlowGraphLib Python Examples")
+    print("===========================")
+    
+    simple_example()
     optimized_example()
+    error_handling_example()

@@ -17,10 +17,19 @@ class TestFlowGraph(unittest.TestCase):
         node2 = self.graph.create_node("output", 0.0)
         self.assertTrue(self.graph.connect_nodes(node1, node2))
 
+    def test_invalid_connection(self):
+        """Test connecting invalid nodes."""
+        node1 = self.graph.create_node("input", 5.0)
+        self.assertFalse(self.graph.connect_nodes(node1, 999))  # Invalid node ID
+
     def test_precision_setting(self):
         """Test setting node precision."""
         node = self.graph.create_node("test", 5.0)
         self.assertTrue(self.graph.set_precision(node, 4))
+
+    def test_invalid_precision(self):
+        """Test setting precision for invalid node."""
+        self.assertFalse(self.graph.set_precision(999, 4))  # Invalid node ID
 
     def test_graph_execution(self):
         """Test graph execution and results."""
@@ -73,15 +82,6 @@ class TestFlowGraph(unittest.TestCase):
         results = self.graph.execute()
         self.assertIsInstance(results, dict)
         self.assertEqual(len(results), len(nodes))
-
-    def test_error_handling(self):
-        """Test error handling."""
-        # Test invalid node connection
-        node1 = self.graph.create_node("test1", 5.0)
-        self.assertFalse(self.graph.connect_nodes(node1, 999))  # Invalid node ID
-
-        # Test invalid precision setting
-        self.assertFalse(self.graph.set_precision(999, 4))  # Invalid node ID
 
 if __name__ == '__main__':
     unittest.main()
