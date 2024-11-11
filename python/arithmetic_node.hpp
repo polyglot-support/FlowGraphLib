@@ -5,16 +5,17 @@
 #include "../include/flowgraph/async/task.hpp"
 #include <string>
 #include <memory>
+#include <cmath>
 
 namespace flowgraph {
 namespace python {
 
 // Simple node that performs basic arithmetic
 template<typename T>
-class ArithmeticNode : public Node<T> {
+class ArithmeticNode final : public Node<T> {
 public:
-    ArithmeticNode(std::string name, T value)
-        : Node<T>(std::move(name))
+    explicit ArithmeticNode(std::string name, T value)
+        : Node<T>(std::move(name), 8)  // Support up to 8 precision levels
         , value_(value) {}
 
 protected:
@@ -22,9 +23,12 @@ protected:
         try {
             // Simulate computation with precision
             T result = value_;
-            for (size_t i = 0; i < precision_level; ++i) {
-                result *= static_cast<T>(1.1);  // Simple operation affected by precision
-            }
+            T factor = static_cast<T>(1.1);
+            
+            // Round to specified precision
+            T scale = std::pow(10.0, static_cast<double>(precision_level));
+            result = std::round(result * factor * scale) / scale;
+            
             co_return ComputeResult<T>(result);
         } catch (const std::exception& e) {
             auto error = ErrorState::computation_error(e.what());

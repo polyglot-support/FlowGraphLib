@@ -82,7 +82,15 @@ if(BUILD_PYTHON_BINDINGS)
     )
     FetchContent_MakeAvailable(pybind11)
 
-    pybind11_add_module(flowgraph_python python/flowgraph_module.cpp)
+    pybind11_add_module(flowgraph_python 
+        python/flowgraph_module.cpp
+        include/flowgraph/optimization/compression_optimization.hpp
+        include/flowgraph/optimization/precision_optimization.hpp
+    )
+    target_include_directories(flowgraph_python PRIVATE
+        ${CMAKE_SOURCE_DIR}
+        ${pybind11_INCLUDE_DIRS}
+    )
     target_link_libraries(flowgraph_python PRIVATE flowgraph)
     set_target_properties(flowgraph_python PROPERTIES
         OUTPUT_NAME "flowgraph"

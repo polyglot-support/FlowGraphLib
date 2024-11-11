@@ -1,16 +1,42 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+// Core includes
 #include "../include/flowgraph/core/graph.hpp"
 #include "../include/flowgraph/core/node.hpp"
 #include "../include/flowgraph/core/edge.hpp"
+#include "../include/flowgraph/core/compute_result.hpp"
+#include "../include/flowgraph/core/error_state.hpp"
+
+// Optimization includes
 #include "../include/flowgraph/optimization/compression_optimization.hpp"
 #include "../include/flowgraph/optimization/precision_optimization.hpp"
+
+// Async includes
+#include "../include/flowgraph/async/task.hpp"
+#include "../include/flowgraph/async/thread_pool.hpp"
+
+// Local includes
 #include "arithmetic_node.hpp"
+
+// Standard includes
+#include <memory>
+#include <string>
+#include <unordered_map>
 
 namespace py = pybind11;
 
 namespace flowgraph {
 namespace python {
+
+// Explicit template instantiations
+template class ArithmeticNode<double>;
+template class Graph<double>;
+template class Node<double>;
+template class Edge<double>;
+template class ComputeResult<double>;
+template class CompressionOptimization<double>;
+template class PrecisionOptimization<double>;
 
 class FlowGraphPython {
 public:
@@ -70,12 +96,12 @@ public:
     // Enable optimization
     void enableOptimization(bool enable_compression = true, bool enable_precision = true) {
         if (enable_compression) {
-            graph_.add_optimization_pass(
-                std::make_unique<CompressionOptimization<double>>());
+            auto pass = std::make_unique<CompressionOptimization<double>>();
+            graph_.add_optimization_pass(std::move(pass));
         }
         if (enable_precision) {
-            graph_.add_optimization_pass(
-                std::make_unique<PrecisionOptimization<double>>());
+            auto pass = std::make_unique<PrecisionOptimization<double>>();
+            graph_.add_optimization_pass(std::move(pass));
         }
     }
 

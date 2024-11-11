@@ -129,19 +129,27 @@ jobs:
         
     - name: Install Dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y llvm-dev libpcre3-dev python3-dev
         python -m pip install --upgrade pip
-        python -m pip install pytest
+        python -m pip install pytest numpy
         
     - name: Configure CMake
+      env:
+        CC: gcc
+        CXX: g++
       run: |
         cmake -B build \
           -DCMAKE_BUILD_TYPE=${{ inputs.build_type || 'Release' }} \
-          -DBUILD_PYTHON_BINDINGS=ON
+          -DBUILD_PYTHON_BINDINGS=ON \
+          -DPython_ROOT_DIR=$(python -c "import sys; print(sys.prefix)") \
+          -DPYTHON_EXECUTABLE=$(which python)
           
     - name: Build
-      run: cmake --build build
-      
+      run: |
+        cmake --build build --verbose
+        
     - name: Python Tests
       run: |
         cd build/python
-        PYTHONPATH=. python -m pytest ../../python/test_flowgraph.py -v
+        PYTHONPATH=. python -m pytest ../../python/test_flowgraph.py -v --capture=no
