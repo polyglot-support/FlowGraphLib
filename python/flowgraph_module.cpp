@@ -2,13 +2,15 @@
 #include <pybind11/stl.h>
 
 // Core includes
-#include "../include/flowgraph/core/graph.hpp"
 #include "../include/flowgraph/core/node.hpp"
+#include "../include/flowgraph/core/graph.hpp"
 #include "../include/flowgraph/core/edge.hpp"
 #include "../include/flowgraph/core/compute_result.hpp"
 #include "../include/flowgraph/core/error_state.hpp"
+#include "../include/flowgraph/core/optimization_base.hpp"
 
 // Optimization includes
+#include "../include/flowgraph/optimization/optimization_pass.hpp"
 #include "../include/flowgraph/optimization/compression_optimization.hpp"
 #include "../include/flowgraph/optimization/precision_optimization.hpp"
 
@@ -29,20 +31,15 @@ namespace py = pybind11;
 namespace flowgraph {
 namespace python {
 
-// Explicit template instantiations
-template class ArithmeticNode<double>;
-template class Graph<double>;
-template class Node<double>;
-template class Edge<double>;
-template class ComputeResult<double>;
-template class CompressionOptimization<double>;
-template class PrecisionOptimization<double>;
-
 class FlowGraphPython {
 public:
+    using value_type = double;
+
+    FlowGraphPython() : next_id_(0) {}
+
     // Create a new node with given name and initial value
-    int createNode(const std::string& name, double value) {
-        auto node = std::make_shared<ArithmeticNode<double>>(name, value);
+    int createNode(const std::string& name, value_type value) {
+        auto node = std::make_shared<ArithmeticNode<value_type>>(name, value);
         nodes_[next_id_] = node;
         graph_.add_node(node);
         return next_id_++;
@@ -56,7 +53,7 @@ public:
             return false;
         }
 
-        auto edge = std::make_shared<Edge<double>>(from_it->second, to_it->second);
+        auto edge = std::make_shared<Edge<value_type>>(from_it->second, to_it->second);
         graph_.add_edge(edge);
         return true;
     }
@@ -96,19 +93,19 @@ public:
     // Enable optimization
     void enableOptimization(bool enable_compression = true, bool enable_precision = true) {
         if (enable_compression) {
-            auto pass = std::make_unique<CompressionOptimization<double>>();
+            auto pass = std::make_unique<CompressionOptimizationPass<value_type>>();
             graph_.add_optimization_pass(std::move(pass));
         }
         if (enable_precision) {
-            auto pass = std::make_unique<PrecisionOptimization<double>>();
+            auto pass = std::make_unique<PrecisionOptimizationPass<value_type>>();
             graph_.add_optimization_pass(std::move(pass));
         }
     }
 
 private:
-    Graph<double> graph_;
-    std::unordered_map<int, std::shared_ptr<Node<double>>> nodes_;
-    int next_id_ = 0;
+    Graph<value_type> graph_;
+    std::unordered_map<int, std::shared_ptr<Node<value_type>>> nodes_;
+    int next_id_;
 };
 
 } // namespace python

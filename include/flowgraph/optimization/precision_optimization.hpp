@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <queue>
+#include <iostream>
 #include "../core/node.hpp"
 #include "../core/graph.hpp"
 #include "optimization_pass.hpp"

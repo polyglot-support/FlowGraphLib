@@ -34,9 +34,27 @@ else()
     add_compile_options(-std=c++20 -fconcepts -fcoroutines -Wall -Wextra -Wpedantic)
 endif()
 
+# Set output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # Add core library target
-add_library(flowgraph INTERFACE)
-target_include_directories(flowgraph INTERFACE ${CMAKE_SOURCE_DIR})
+add_library(flowgraph_core STATIC
+    src/flowgraph.cpp
+    include/flowgraph/core/node.hpp
+    include/flowgraph/core/graph.hpp
+    include/flowgraph/core/edge.hpp
+    include/flowgraph/core/compute_result.hpp
+    include/flowgraph/core/error_state.hpp
+    include/flowgraph/core/optimization_base.hpp
+    include/flowgraph/optimization/optimization_pass.hpp
+    include/flowgraph/optimization/compression_optimization.hpp
+    include/flowgraph/optimization/precision_optimization.hpp
+    include/flowgraph/async/task.hpp
+    include/flowgraph/async/thread_pool.hpp
+)
+target_include_directories(flowgraph_core PUBLIC ${CMAKE_SOURCE_DIR})
 
 # Enable testing unless building for WASM
 if(NOT EMSCRIPTEN)
@@ -44,15 +62,10 @@ if(NOT EMSCRIPTEN)
     add_subdirectory(tests)
 endif()
 
-# Set output directories
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
 # WASM target
 if(EMSCRIPTEN)
     add_executable(flowgraph_wasm wasm/flowgraph.hpp examples/basic_usage.cpp)
-    target_link_libraries(flowgraph_wasm PRIVATE flowgraph)
+    target_link_libraries(flowgraph_wasm PRIVATE flowgraph_core)
     set_target_properties(flowgraph_wasm PROPERTIES
         LINK_FLAGS "--shell-file ${CMAKE_SOURCE_DIR}/wasm/shell.html \
                    -s EXPORTED_RUNTIME_METHODS=['ccall','cwrap'] \
@@ -82,16 +95,13 @@ if(BUILD_PYTHON_BINDINGS)
     )
     FetchContent_MakeAvailable(pybind11)
 
-    pybind11_add_module(flowgraph_python 
+    pybind11_add_module(flowgraph_python MODULE
         python/flowgraph_module.cpp
-        include/flowgraph/optimization/compression_optimization.hpp
-        include/flowgraph/optimization/precision_optimization.hpp
     )
-    target_include_directories(flowgraph_python PRIVATE
-        ${CMAKE_SOURCE_DIR}
-        ${pybind11_INCLUDE_DIRS}
-    )
-    target_link_libraries(flowgraph_python PRIVATE flowgraph)
+    
+    target_include_directories(flowgraph_python PRIVATE ${CMAKE_SOURCE_DIR})
+    target_link_libraries(flowgraph_python PRIVATE pybind11::module flowgraph_core)
+    
     set_target_properties(flowgraph_python PROPERTIES
         OUTPUT_NAME "flowgraph"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/python"

@@ -25,7 +25,7 @@ add_executable(flowgraph_tests
 
 target_link_libraries(flowgraph_tests
     PRIVATE
-    flowgraph
+    flowgraph_core
     GTest::gtest
     GTest::gtest_main
 )
@@ -50,7 +50,7 @@ if(BUILD_BENCHMARKS)
 
     target_link_libraries(flowgraph_benchmarks
         PRIVATE
-        flowgraph
+        flowgraph_core
         benchmark::benchmark
         benchmark::benchmark_main
     )
